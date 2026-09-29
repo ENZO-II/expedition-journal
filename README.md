@@ -52,6 +52,7 @@ npm run check
 - [手抄本研究参考](docs/art-sources.md)
 - [插画生成记录与完整提示词](docs/generated-illustration-prompts.txt)
 - [验收记录](docs/testing.md)
+- [第二版视觉修订与游戏 UI 参考](docs/visual-revision.md)
 
 下一阶段：战役邀请与多人身份、服务器持久化和冲突处理、物品原子转交、Owlbear 房间与地图接入。在这些完成前，请使用备份迁移体验数据，不要把本机样稿当作多人服务。
 

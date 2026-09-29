@@ -4,26 +4,26 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#632a32"><meta name="description" content="地图上的足迹，旅途中的手记。远征手记交互样稿。">
 <title>远征手记 · Expedition Journal</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="manuscript.css">
 </head>
 <body>
 <div id="app">
 <header class="masthead">
-  <a class="wordmark" href="./" aria-label="远征手记首页"><span class="seal" aria-hidden="true">E</span><span>远征手记<small>EXPEDITION JOURNAL</small></span></a>
+  <a class="wordmark" href="./" aria-label="远征手记首页"><span class="seal" aria-hidden="true">远</span><span>远征手记</span></a>
   <div class="campaign-switch"><label class="sr-only" for="campaign-select">切换战役</label><select id="campaign-select"></select><button class="icon-button" id="new-campaign" title="创建战役" aria-label="创建战役">＋</button></div>
   <div class="header-actions"><button class="text-button" id="export-button">导出手记</button><button class="character-button" id="character-button"><span class="avatar">旅</span><span id="character-label">登记角色</span><span aria-hidden="true">⌄</span></button></div>
 </header>
 <div class="workspace">
 <nav class="spine" aria-label="主要功能">
-<button class="nav-tab active" data-view="map" aria-current="page"><span aria-hidden="true">⌖</span><span>舆图</span></button>
-<button class="nav-tab" data-view="journal"><span aria-hidden="true">❧</span><span>手记</span></button>
-<button class="nav-tab" data-view="bag"><span aria-hidden="true">♧</span><span>行囊</span></button>
-<button class="nav-tab" data-view="vault"><span aria-hidden="true">⚿</span><span>公库</span></button>
+<button class="nav-tab active" data-view="map" aria-current="page"><span class="tab-icon tab-map" aria-hidden="true"><img src="assets/portolan.jpg" alt=""></span><span>舆图</span></button>
+<button class="nav-tab" data-view="journal"><span class="tab-icon" aria-hidden="true"><svg viewBox="2140 673 430 430"><image href="assets/illumination.jpg" width="4000" height="2250"/></svg></span><span>手记</span></button>
+<button class="nav-tab" data-view="bag"><span class="tab-icon" aria-hidden="true"><img src="assets/inventory-pouch.png" alt=""></span><span>行囊</span></button>
+<button class="nav-tab" data-view="vault"><span class="tab-icon" aria-hidden="true"><img src="assets/inventory-coffer.png" alt=""></span><span>公库</span></button>
 <div class="spine-bottom"><button class="nav-tab" id="settings-button"><span aria-hidden="true">⚙</span><span>设置</span></button><button class="nav-tab" id="about-button"><span aria-hidden="true">i</span><span>出处</span></button></div>
 </nav>
 <main class="main-surface" id="main"></main>
 </div>
-<footer class="status-bar"><span class="edition">交互样稿 · 仅保存在此设备</span><span id="save-status" role="status" aria-live="polite">已就绪</span><span class="footer-brand">EX LIBRIS · 远征手记</span></footer>
+<footer class="status-bar"><span class="edition">交互样稿 · 仅保存在此设备</span><span id="save-status" role="status" aria-live="polite">已就绪</span></footer>
 </div>
 <dialog id="dialog" aria-labelledby="dialog-title"><div class="dialog-frame"><div class="dialog-heading"><h2 id="dialog-title"></h2><button class="icon-button" id="close-dialog" aria-label="关闭">×</button></div><div id="dialog-content"></div></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
