@@ -1,5 +1,4 @@
 node_modules/
-dist/
 build/
 coverage/
 .env
@@ -17,3 +16,4 @@ Thumbs.db
 data/
 uploads/
 backups/
+
