@@ -1,6 +1,6 @@
 # Campaign journal historical assets
 
-Downloaded unchanged on 2026-09-29. Historical source images are unchanged. UI display crops and rotates them without modifying the files.
+Downloaded unchanged on 2026-09-29. Historical source images are unchanged. The map is rotated at display time; the Bening folio is now retained only as research material.
 
 ## Simon Bening, Book of Hours, ca. 1530–35
 
@@ -14,7 +14,7 @@ Downloaded unchanged on 2026-09-29. Historical source images are unchanged. UI d
 - Policy: https://www.metmuseum.org/hubs/open-access
 - The 1200 × 675 `met-bening-book-of-hours.jpg` is the museum's unchanged smaller delivery, not a local edit.
 
-Visual placement: the right folio provides gold floral borders, blue and red flowers, a bird, and a dragonfly. For CSS-only cropping, approximate source-image regions are: top border x=51.5–78%, y=14–18%; right border x=74–78%, y=15–82%; bottom border x=51.5–78%, y=74–83%. Preserve the original file. Avoid enlarging narrow strips beyond their useful source resolution. The physical book and black surround are visible in the full image.
+Archived v2 placement (removed from the active UI in v3): the right folio provides gold floral borders, blue and red flowers, a bird, and a dragonfly. For CSS-only cropping, approximate source-image regions are: top border x=51.5–78%, y=14–18%; right border x=74–78%, y=15–82%; bottom border x=51.5–78%, y=74–83%. Preserve the original file. Avoid enlarging narrow strips beyond their useful source resolution. The physical book and black surround are visible in the full image.
 
 ## Anonymous, Portolan chart of the Mediterranean and connecting seas, ca. 1550
 
@@ -35,3 +35,24 @@ Visual placement: parchment with red/black place names, compass roses, and rhumb
 - Met original → `dist/assets/illumination.jpg`.
 - LOC chart original → `dist/assets/portolan.jpg`.
 - `dist/assets/inventory-pouch.png` and `dist/assets/inventory-coffer.png`: original AI-generated supporting illustrations, created 2026-09-29 using built-in ImageGen. These are not museum reproductions or authenticated period artifacts. Exact prompts are recorded in `generated-illustration-prompts.txt`. Both files are 1254 × 1254 with alpha transparency.
+
+
+## Complete original illuminations · 2026-09-30
+
+- `dist/assets/architecture-niche-v3.png`: 1086 × 1448, RGBA, 2,112,079 bytes. Complete Gothic architectural display niche with scribe and grotesque.
+- `dist/assets/atlas-frame-v3.png`: 1448 × 1086, RGBA, 1,849,043 bytes. Complete map surround with scholar, dragon, birds and foliage.
+- `dist/assets/journal-leaf-v3.png`: 1086 × 1448, RGBA, 3,338,005 bytes. Complete illuminated blank folio with winged rabbit marginal creature.
+
+Generated for this project using built-in ImageGen, one request per image; originals preserved unchanged. Displayed whole at their original aspect ratios, not sliced. These are AI-generated illustrations, not public-domain museum artifacts or copied game assets. The project permits reuse of its generated supporting images under the repository MIT terms to the extent rights exist. Historical source materials retain the separate status stated above.
+
+Exact prompts: [illumination-v3-prompts.md](illumination-v3-prompts.md). Measured aperture and transparency report: [illumination-v3-asset-qa.md](illumination-v3-asset-qa.md).
+
+
+## Painted ground and divider · 2026-09-30
+
+- `dist/assets/gilt-millefleur-ground-v4.png`: 1254 × 1254, RGB, 3,818,444 bytes. Gold-ground small-scale flowers, foliage and birds. Not a verified seamless tile; inspect repeat edges at larger sizes.
+- `dist/assets/acanthus-divider-v4.png`: 724 × 2172, RGBA, 851,161 bytes. Complete vertical golden branch with colored acanthus, two birds and a small human-faced dragon head. Displayed whole, without slicing.
+
+Both are original supporting illustrations generated using built-in ImageGen, one request each, no variants or retries; copied unchanged. They share the generated-asset reuse terms stated above and are not museum objects. [Exact prompts](illumination-v4-prompts.md) and [measured QA](illumination-v4-asset-qa.md).
+
+Additional visual research: [Getty, Decorated Text Page, Ms. Ludwig IX 19, fol. 312](https://www.getty.edu/art/collection/object/107SG2), about 1525–1530. The reference image was viewed, not downloaded or included in the application.

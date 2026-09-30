@@ -51,11 +51,12 @@ npm run check
 - [素材来源及许可](docs/asset-manifest.md)
 - [手抄本研究参考](docs/art-sources.md)
 - [插画生成记录与完整提示词](docs/generated-illustration-prompts.txt)
+- [完整彩饰插画提示词](docs/illumination-v3-prompts.md) · [金地与栏间花枝](docs/illumination-v4-prompts.md)
 - [验收记录](docs/testing.md)
-- [第二版视觉修订与游戏 UI 参考](docs/visual-revision.md)
+- [视觉修订与游戏 UI、馆藏参考](docs/visual-revision.md)
 
 下一阶段：战役邀请与多人身份、服务器持久化和冲突处理、物品原子转交、Owlbear 房间与地图接入。在这些完成前，请使用备份迁移体验数据，不要把本机样稿当作多人服务。
 
 ## 许可
 
-自编代码与文档采用 [MIT License](LICENSE)。馆藏图像为来源标明的公共领域素材，详见素材清单。行囊与木箱是 AI 生成的项目辅助插画，不属于馆藏原作。在线字体通过 Google Fonts 加载 Noto Serif SC（SIL Open Font License），不可用时回退系统字体。
+自编代码与文档采用 [MIT License](LICENSE)。馆藏图像为来源标明的公共领域素材，详见素材清单。金色建筑龛、地图装饰、手记页、金地花鸟、分隔花枝、行囊与木箱是 AI 生成的项目辅助插画，不属于馆藏原作或游戏素材。在线字体通过 Google Fonts 加载 Noto Serif SC（SIL Open Font License），不可用时回退系统字体。
