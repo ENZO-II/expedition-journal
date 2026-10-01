@@ -1,0 +1,53 @@
+/* Pigment fields, rubric capitals and painted junctions form the page structure. */
+:root{--lapis:#234b7b;--rubric-red:#9a2826;--leaf-gold:#c7a148}
+.reading-frontispiece{position:relative;flex-shrink:0;margin:-7px -12px 27px;isolation:isolate;background:#234b7b url('assets/manuscript-diaper.svg') center/75px 50px;border:1px solid #594723;box-shadow:inset 0 0 0 2px #cfaa53,inset 0 0 0 4px #153756}
+.reading-frontispiece .leaf-heading{padding:10px 15px 9px;margin:0;border:0;background:linear-gradient(90deg,#173b6599,#234b7b11);min-height:73px}
+.leaf-heading h2{display:flex;align-items:center;gap:7px}
+.illuminated-initial{font-size:36px;line-height:1;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:48px;color:#eccc70;background:#972d2b url('assets/manuscript-diaper.svg') center/45px 30px;border:2px solid #c8a446;outline:1px solid #422f20;box-shadow:inset 0 0 0 2px #622e24;font-weight:600;text-shadow:1px 1px #573d19}
+.reading-frontispiece .leaf-heading h2,.inventory-book .leaf-heading h2,.journal-book>.page-right>.leaf-heading h2{font-size:23px;letter-spacing:3px;color:#f3dfaf;text-shadow:1px 1px #142b41}
+.reading-frontispiece .leaf-number,.inventory-book .leaf-number,.journal-book>.page-right>.leaf-heading .leaf-number{color:#d8bc72}
+.reading-frontispiece .leaf-actions .button,.inventory-book .leaf-actions .button{background:#e8d5b3;color:#663020;border:1px solid #d6b96c;box-shadow:inset 0 0 0 2px #e8d5b3,inset 0 0 0 3px #9c7941;font-size:12px;min-height:40px;padding:6px 10px}
+.reading-frontispiece .filters{padding:0 15px 13px;gap:7px}
+.reading-frontispiece .filters select,.reading-frontispiece .filters input{background:#eadbc0;border:1px solid #b29453;box-shadow:inset 0 0 0 2px #f2e5cb8c;color:#3c3325;font-size:12px;min-height:37px;padding:6px;max-width:100%}
+.reading-frontispiece .filters input{margin-top:0;min-height:35px}
+.reading-frontispiece .reading-toolbar{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:65px;margin:0;padding:7px 25% 12px;gap:0;border:0;background:#c69b40 url('assets/gold-stipple.svg') center/170px 100px;color:#4b311c;font-size:12px}
+.reading-toolbar>span,.reading-toolbar>.text-button{position:relative;z-index:2;max-width:100%}
+.reading-frontispiece .reading-toolbar .text-button{min-height:25px;padding:1px 0 3px;color:#5b3022;font-size:11px}
+.rubric-junction{position:absolute;z-index:1;bottom:0;left:-11px;width:calc(100% + 22px);height:auto;pointer-events:none;user-select:none}
+/* The image is whole. Its painted rule meets the bottom edge of the gold field. */
+.reading-frontispiece .rubric-junction{bottom:0;transform:translateY(50%)}
+.reading-frontispiece + .manuscript{margin-top:3px}
+.book-page::before{inset:0 auto 0 0;width:10px;border:1px solid #b39245;outline:0;background:#992923 url('assets/manuscript-diaper.svg') center/40px 50px;box-shadow:inset 2px 0 #e2be56,inset -2px 0 #613f27;z-index:-1}
+.page-right::before{left:auto;right:0}
+.book-page::after{display:none}
+.atlas-book>.page-right::before{display:none}
+.folio-top{padding-top:18px;padding-bottom:11px}
+.folio-number{color:#7b332a}.folio-top .eyebrow{color:#284e74}
+.folio-bottom{position:relative;border-top:0;padding-top:16px}
+.folio-bottom::before,.ledger-entries::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#244b7b url('assets/manuscript-diaper.svg') center/34px 24px;border:1px solid #a98437;box-shadow:0 1px #d9b95b}
+.entry-title{color:#8c2f27}.entry-text::first-letter{color:#234e79;text-shadow:1px 0 #ba9542}
+.inventory-book .leaf-heading,.journal-book>.page-right>.leaf-heading{background:#234b7b url('assets/manuscript-diaper.svg') center/75px 50px;box-shadow:inset 0 0 0 2px #cfaa53,inset 0 0 0 4px #153756;border:1px solid #594723;min-height:78px;margin:-7px -12px 0;padding:12px 14px;flex-shrink:0}
+.inventory-frontispiece{position:relative;margin:0 -12px 0;padding:13px 17px 16px;min-height:172px;gap:16px;background:#c69b40 url('assets/gold-stipple.svg') center/170px 100px;border:1px solid #8c672b;border-top:0;border-bottom:0;box-shadow:inset 3px 0 #e8c15f,inset -3px 0 #e8c15f}
+.inventory-frontispiece::after{content:"";position:absolute;left:-1px;right:-1px;bottom:0;height:9px;background:#902926 url('assets/manuscript-diaper.svg') center/40px 30px;border-block:2px solid #dfb64f;box-shadow:0 1px #684723}
+.inventory-frontispiece h3{color:#613021;font-size:23px;text-shadow:0 1px #e5be5b}
+.inventory-count,.inventory-owner,.inventory-frontispiece .text-button{color:#503821}
+.object-niche{width:119px}.niche-frame{mix-blend-mode:normal}.object-niche .inventory-illustration{mix-blend-mode:normal}
+.ledger-entries{position:relative;padding-top:8px;margin-top:14px}.ledger-entries::before{display:none}
+.item-row{position:relative;grid-template-columns:28px minmax(0,1fr) auto;padding:15px 0 15px;border-bottom:0;gap:10px}
+.item-row::after{content:"";position:absolute;bottom:0;left:39px;right:3px;height:3px;background:#9b2927 url('assets/manuscript-diaper.svg') left/32px 22px;border-block:1px solid #b39348}
+.item-row:nth-child(even)::after{background-color:#214d78}
+.item-index{display:flex;align-items:center;justify-content:center;width:26px;height:32px;margin-top:1px;background:#234e76 url('assets/manuscript-diaper.svg') center/30px 24px;border:1px solid #a07a33;outline:1px solid #d8b969;outline-offset:1px;color:#f2dda4;font-size:12px}
+.item-row:nth-child(even) .item-index{background-color:#942d29}
+.item-name{color:#683325;font-size:19px}.item-description{color:#60482e}.item-actions .text-button{color:#275375}
+.journal-book>.page-right>.leaf-heading .text-button{color:#f1dca9;font-size:12px}
+.catalog-summary{margin:0 -12px 12px;padding:10px 16px;background:#c69b40 url('assets/gold-stipple.svg') center/170px 100px;border:1px solid #8c672b;border-top:0;color:#4c351e}
+.entry-list-button{border-bottom:1px solid #ad8a45}.entry-list-button.active{box-shadow:inset 4px 0 #942d29;background:#c69b401c}
+@media(max-width:1100px){.reading-frontispiece,.inventory-book .leaf-heading,.journal-book>.page-right>.leaf-heading{margin-left:-8px;margin-right:-8px}.reading-frontispiece .leaf-heading{padding:9px 12px 7px;min-height:69px}.reading-frontispiece .leaf-heading h2,.inventory-book .leaf-heading h2,.journal-book>.page-right>.leaf-heading h2{font-size:22px}.illuminated-initial{font-size:32px;min-width:34px;height:43px}.reading-frontispiece .filters{padding:0 12px 11px}.inventory-frontispiece{margin-left:-8px;margin-right:-8px;padding-left:13px;padding-right:13px;min-height:164px;gap:12px}.object-niche{width:110px}.catalog-summary{margin-left:-8px;margin-right:-8px}}
+@media(max-width:850px){.reading-frontispiece{margin:0 -8px 24px}.reading-frontispiece .leaf-heading{padding:8px 10px;min-height:68px}.reading-frontispiece .leaf-heading h2,.inventory-book .leaf-heading h2,.journal-book>.page-right>.leaf-heading h2{font-size:19px;letter-spacing:1px;gap:5px}.reading-frontispiece .leaf-number{display:none}.reading-frontispiece .leaf-actions .button,.inventory-book .leaf-actions .button{font-size:11px;padding:5px 7px;min-height:39px}.reading-frontispiece .filters{padding:0 10px 10px;gap:5px}.reading-frontispiece .filters select{font-size:11px;min-height:36px;padding:5px 3px}.reading-frontispiece .reading-toolbar{min-height:59px;padding-left:24%;padding-right:24%;padding-bottom:10px;font-size:11px}.reading-frontispiece .reading-toolbar .text-button{font-size:11px}.rubric-junction{left:-7px;width:calc(100% + 14px)}.folio-top{padding-top:9px}.book-page::before{width:7px}.inventory-book .leaf-heading,.journal-book>.page-right>.leaf-heading{padding:10px 9px;min-height:70px}.inventory-book .leaf-number{display:none}.inventory-frontispiece{gap:8px;min-height:151px;padding:12px 10px 15px}.object-niche{width:91px}.inventory-frontispiece h3{font-size:19px}.item-row{grid-template-columns:23px minmax(0,1fr) auto;gap:7px}.item-index{width:21px;height:27px;font-size:10px}.item-row::after{left:31px}.item-name{font-size:17px}.item-description{font-size:13px}.catalog-summary{padding:10px 12px}.journal-book>.page-right>.leaf-heading .text-button{font-size:11px;padding:4px}}
+@media(max-width:640px){.reading-frontispiece{margin-top:0}.reading-frontispiece .leaf-heading h2,.inventory-book .leaf-heading h2,.journal-book>.page-right>.leaf-heading h2{font-size:22px}.inventory-frontispiece{min-height:170px}.object-niche{width:112px}.item-name{font-size:19px}.item-description{font-size:14px}.reading-frontispiece .filters select{font-size:12px}}
+@media print{.reading-frontispiece,.inventory-frontispiece,.inventory-book .leaf-heading,.journal-book>.page-right>.leaf-heading,.catalog-summary{background:white;box-shadow:none;border:0;color:black}.rubric-junction,.book-page::before,.folio-bottom::before{display:none}.illuminated-initial{background:white;color:black;box-shadow:none;outline:0}.reading-frontispiece .leaf-heading h2,.inventory-book .leaf-heading h2{color:black;text-shadow:none}}
+
+/* Reserve the overhanging vine ends without putting them over page metadata. */
+.reading-frontispiece + .manuscript .folio-top{padding-left:36px;padding-right:36px}
+.reading-frontispiece + .manuscript .folio-top .eyebrow{visibility:hidden}
+.rubric-junction{max-width:none}

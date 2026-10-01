@@ -24,6 +24,7 @@ python -m http.server 4173 --bind 127.0.0.1 --directory dist
 - 当前战役 Markdown、可打印 HTML；包含所有战役和上传图片的 JSON 备份及恢复。
 - 使用沃尔特斯 W.183《时祷书》空白犊皮纸页（约 1460–1470，CC0）作为书页与卷轴底材，保留原图并在显示时调暖色调。
 - 旧羊皮纸双页书本：左页手记、右页地图；物品册左页行囊、右页公库。桌面及平板横竖屏保持双页，窄窗口按页纵向排列。
+- 彩色题栏、朱红首字、金地与整幅人物藤枝共同划分书页，物品条目以红蓝行填饰过渡；装饰让出正文与操作区域。
 - 册签切换翻页动画，尊重系统减少动态效果设置。地图支持键盘方向键、加减号、0 复位；已实现双指缩放，仍待真实触屏设备验证。
 - 可选浏览器 WebMCP：读取当前战役索引与翻开已存在的日记。浏览器不支持时不影响使用。
 
@@ -53,7 +54,7 @@ npm run check
 - [素材来源及许可](docs/asset-manifest.md)
 - [手抄本研究参考](docs/art-sources.md)
 - [插画生成记录与完整提示词](docs/generated-illustration-prompts.txt)
-- [完整彩饰插画提示词](docs/illumination-v3-prompts.md) · [金地与栏间花枝](docs/illumination-v4-prompts.md)
+- [完整彩饰插画提示词](docs/illumination-v3-prompts.md) · [金地与栏间花枝](docs/illumination-v4-prompts.md) · [人物与藤枝分隔小画](docs/illumination-v7-prompt.md)
 - [验收记录](docs/testing.md)
 - [视觉修订与游戏 UI、馆藏参考](docs/visual-revision.md)
 

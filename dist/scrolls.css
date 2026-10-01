@@ -21,7 +21,8 @@
 .map-scroll-host{position:absolute;inset:0;z-index:6;pointer-events:none}
 .map-scroll{position:absolute;width:var(--scroll-width,252px);height:var(--scroll-height,370px);pointer-events:auto;filter:drop-shadow(3px 8px 9px #32231355);outline:0;isolation:isolate}
 .map-scroll[hidden]{display:none}
-.scroll-paper{position:absolute;inset:6px 7px;display:flex;flex-direction:column;padding:23px 18px 18px;background-color:#ead5b0;background-image:linear-gradient(#fbe7c3bf,#f0d6aabc),url('assets/walters-w183-126v.jpg');background-size:auto,120% 116%;background-position:center,56% 52%;background-blend-mode:normal,luminosity;border-left:1px solid #a4814644;border-right:1px solid #a4814644;clip-path:polygon(1% 0,98% 0,100% 28%,99% 61%,100% 100%,1% 100%,0 73%,1% 34%)}
+.scroll-paper{position:absolute;inset:6px 7px;display:flex;flex-direction:column;padding:23px 18px 18px;isolation:isolate}
+.scroll-skin{position:absolute;inset:0;z-index:-1;background-color:#ead5b0;background-image:linear-gradient(#fbe7c3bf,#f0d6aabc),url('assets/walters-w183-126v.jpg');background-size:auto,120% 116%;background-position:center,56% 52%;background-blend-mode:normal,luminosity;border-left:1px solid #a4814644;border-right:1px solid #a4814644;clip-path:polygon(1% 0,98% 0,100% 28%,99% 61%,100% 100%,1% 100%,0 73%,1% 34%)}
 .scroll-roll{position:absolute;left:0;right:0;height:15px;border-radius:45% / 40%;background:linear-gradient(#a78248 0%,#e8cf9e 16%,#f8e7c3 42%,#d4b77e 74%,#8b6737 100%);box-shadow:0 1px 2px #64432166;z-index:2;pointer-events:none}
 .scroll-roll.top{top:0}.scroll-roll.bottom{bottom:0;transform:rotate(180deg)}
 .scroll-roll::before,.scroll-roll::after{content:"";position:absolute;top:1px;width:12px;height:12px;border-radius:50%;border:1px solid #876337;background:radial-gradient(ellipse at center,#785732 0 15%,#e4c89c 20% 42%,#997241 46% 58%,#e5cb9f 65%);box-shadow:1px 0 2px #76512d55}
@@ -35,14 +36,14 @@
 .scroll-entry-nav .icon-button{min-height:34px;height:34px;width:32px;font-size:22px}
 .scroll-actions{display:flex;justify-content:space-between;gap:4px;flex-shrink:0;border-top:1px solid #ad8b5755}
 .scroll-actions .text-button{font-size:12px;min-height:42px;padding:5px 3px;white-space:nowrap}
-.map-scroll.unrolling .scroll-paper{animation:scroll-sheet-unroll .48s ease-out both}
+.map-scroll.unrolling .scroll-skin{animation:scroll-sheet-unroll .48s ease-out both}
 .map-scroll.unrolling .scroll-roll.top{animation:scroll-roll-top .48s ease-out both}
 .map-scroll.unrolling .scroll-roll.bottom{animation:scroll-roll-bottom .48s ease-out both}
 @keyframes scroll-sheet-unroll{from{clip-path:inset(46% 0 46% 0)}to{clip-path:inset(0)}}
 @keyframes scroll-roll-top{from{transform:translateY(calc(var(--scroll-height) * .46))}to{transform:translateY(0)}}
 @keyframes scroll-roll-bottom{from{transform:translateY(calc(var(--scroll-height) * -.46)) rotate(180deg)}to{transform:translateY(0) rotate(180deg)}}
 @media(max-width:850px){.atlas-controls{left:12px;right:12px;top:12px;padding-left:4px;padding-right:4px}.atlas-controls select,.atlas-controls .text-button{font-size:12px}.atlas-controls .text-button{padding:5px}.atlas-bottom-controls{left:12px;bottom:14px;gap:4px}.atlas-bottom-controls .button{font-size:12px;padding:6px 9px}.atlas-zoom{right:12px;bottom:14px}.scroll-paper{padding:21px 14px 15px}.scroll-heading h3{font-size:17px}.scroll-excerpt{font-size:14px}.scroll-actions .text-button{font-size:11px}.atlas-tools{left:12px;right:12px}}
-@media(prefers-reduced-motion:reduce){.map-scroll.unrolling .scroll-paper,.map-scroll.unrolling .scroll-roll{animation:none}}
+@media(prefers-reduced-motion:reduce){.map-scroll.unrolling .scroll-skin,.map-scroll.unrolling .scroll-roll,.map-scroll.unrolling .scroll-paper>*:not(.scroll-skin){animation:none}}
 @media print{.atlas-controls,.atlas-tools,.atlas-bottom-controls,.atlas-zoom,.map-scroll-host{display:none}.book-page{background:white}.atlas-book .map-stage{position:relative;height:550px}}
 
 .atlas-book>.page-right{border:0}
@@ -51,3 +52,8 @@
 .atlas-book .map-stage{overflow:clip}
 
 .scroll-meta{overflow-wrap:anywhere;max-height:5.7em;overflow:auto}
+
+/* Animate the paper skin independently, so clipping never swallows a button click. */
+.map-scroll.unrolling .scroll-paper>*:not(.scroll-skin){animation:scroll-ink-appear .48s ease-out both}
+@keyframes scroll-ink-appear{0%,25%{opacity:0}100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.map-scroll.unrolling .scroll-paper>*:not(.scroll-skin){animation:none}}

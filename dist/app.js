@@ -77,14 +77,14 @@ function folio(){
 function heading(kicker,title,subtitle,buttons){return'<div class="page-heading"><div><h1>'+h(title)+'</h1>'+(subtitle?'<p class="subtitle">'+h(subtitle)+'</p>':'')+'</div><div class="toolbar">'+buttons+'</div></div>';}
 
 function pageHead(title,number,actions=''){
- return '<div class="leaf-heading"><div><span class="leaf-number" aria-hidden="true">'+number+'</span><h2>'+title+'</h2></div><div class="leaf-actions">'+actions+'</div></div>';
+ return '<div class="leaf-heading"><div><span class="leaf-number" aria-hidden="true">'+number+'</span><h2 aria-label="'+h(title)+'"><span class="illuminated-initial">'+h(title[0])+'</span>'+h(title.slice(1))+'</h2></div><div class="leaf-actions">'+actions+'</div></div>';
 }
 function book(left,right,kind){
  return '<div class="book-spread '+kind+'"><section class="book-page page-left">'+left+'</section><section class="book-page page-right">'+right+'</section><span class="book-binding" aria-hidden="true"></span></div>';
 }
 function readingPage(){
- return pageHead('手记','I','<button class="button primary" id="new-entry">＋ 写一篇</button>')+filters()+
- (view==='map'?'<div class="reading-toolbar"><span>'+h(campaign().markers.find(m=>m.id===selectedMarker)?.name??'旅途随记')+'</span><button class="text-button" id="expand-journal">全部手记</button></div>':'')+folio();
+ return '<div class="reading-frontispiece">'+pageHead('手记','I','<button class="button primary" id="new-entry">＋ 写一篇</button>')+filters()+
+ '<div class="reading-toolbar"><span>'+h(view==='map'?(campaign().markers.find(m=>m.id===selectedMarker)?.name??'旅途随记'):entriesForView().length+' 篇手记')+'</span>'+(view==='map'?'<button class="text-button" id="expand-journal">全部手记</button>':'')+'</div><img class="rubric-junction" src="assets/rubric-junction-v7.png" alt="" aria-hidden="true"></div>'+folio();
 }
 function renderMap(){
  const c=campaign(),map=c.maps.find(m=>m.id===selectedMap)??c.maps[0];selectedMap=map?.id??null;
@@ -123,12 +123,14 @@ function openPlace(id){
 }
 function renderMapScroll(animate=false){
  const host=$('.map-scroll-host'),marker=campaign().markers.find(m=>m.id===openMarker);if(!host||!marker)return;
+ const unfolding=animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
  const list=scrollEntries();scrollEntryIndex=Math.max(0,Math.min(scrollEntryIndex,list.length-1));const entry=list[scrollEntryIndex];
- host.innerHTML='<aside class="map-scroll '+(animate?'unrolling':'')+'" id="map-scroll" role="dialog" aria-modal="false" aria-labelledby="scroll-title" tabindex="-1"><div class="scroll-paper"><div class="scroll-heading"><h3 id="scroll-title">'+h(marker.name)+'</h3><button class="icon-button" id="scroll-close" aria-label="收起地图卷轴">×</button></div>'+
+ host.innerHTML='<aside class="map-scroll '+(unfolding?'unrolling':'')+'" id="map-scroll" role="dialog" aria-modal="false" aria-labelledby="scroll-title" tabindex="-1"><div class="scroll-paper"><span class="scroll-skin" aria-hidden="true"></span><div class="scroll-heading"><h3 id="scroll-title">'+h(marker.name)+'</h3><button class="icon-button" id="scroll-close" aria-label="收起地图卷轴">×</button></div>'+
  (entry?'<p class="scroll-meta">'+h(characterName(entry.characterId))+' 署 · '+h(entry.adventureLabel||'日期未注明')+'<br>写于 '+h(timeText(entry.createdAt))+' · 第 '+entry.sequence+' 篇</p><div class="scroll-excerpt">'+h(entry.body||'（空白手记）')+'</div>':'<div class="scroll-excerpt">这里还没有手记。</div>')+
  (list.length>1?'<div class="scroll-entry-nav"><button class="icon-button" id="scroll-prev" aria-label="卷轴上一篇" '+(scrollEntryIndex===0?'disabled':'')+'>‹</button><span>'+(scrollEntryIndex+1)+' / '+list.length+'</span><button class="icon-button" id="scroll-next" aria-label="卷轴下一篇" '+(scrollEntryIndex===list.length-1?'disabled':'')+'>›</button></div>':'')+
  '<div class="scroll-actions">'+(entry?'<button class="text-button" id="scroll-read">在左页阅读</button>':'<button class="text-button" id="scroll-settings">地点设置</button>')+'<button class="text-button" id="scroll-write">＋ 写手记</button></div></div><span class="scroll-roll top" aria-hidden="true"></span><span class="scroll-roll bottom" aria-hidden="true"></span></aside>';
  document.querySelectorAll('[data-marker]').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.marker===openMarker)));
+ if(unfolding){const node=$('#map-scroll');node.querySelector('.scroll-skin').addEventListener('animationend',()=>node.classList.remove('unrolling'),{once:true});setTimeout(()=>node.classList.remove('unrolling'),650);}
  positionMapScroll();if($('#rename-marker'))$('#rename-marker').disabled=false;
  $('#scroll-close').onclick=()=>closeMapScroll(true);
  $('#map-scroll').onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeMapScroll(true);}};
@@ -243,7 +245,7 @@ $('#settings-button').onclick=()=>{
  $('#settings-export').onclick=()=>$('#export-button').click();
  $('#restore-button').onclick=()=>$('#backup-upload').click();
 };
-$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记 · 本机交互样稿。日记、角色和物品保存在当前浏览器；上传地图保存在此设备。尚未接入多人同步与 Owlbear 房间，请定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html" target="_blank" rel="noopener">沃尔特斯 W.183《时祷书》，126v</a><br>约 1460–1470，布鲁日；原抄本末尾的空白犊皮纸页。用于书页及卷轴底材，原图不改动，显示时裁去拍摄背景并调暖色调。<a href="https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html" target="_blank" rel="noopener">数字图像开放许可：CC0</a>。</li><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝及行囊与木箱是为本项目生成的原创插画，不属于历史馆藏或游戏原素材。</li></ul>');
+$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记 · 本机交互样稿。日记、角色和物品保存在当前浏览器；上传地图保存在此设备。尚未接入多人同步与 Owlbear 房间，请定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html" target="_blank" rel="noopener">沃尔特斯 W.183《时祷书》，126v</a><br>约 1460–1470，布鲁日；原抄本末尾的空白犊皮纸页。用于书页及卷轴底材，原图不改动，显示时裁去拍摄背景并调暖色调。<a href="https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html" target="_blank" rel="noopener">数字图像开放许可：CC0</a>。</li><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝、书记员与翼龙分隔小画及行囊与木箱是为本项目生成的原创插画，不属于历史馆藏或游戏原素材。</li></ul>');
 function download(name,content,type){const url=URL.createObjectURL(content instanceof Blob?content:new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 function markdown(){const c=exportSnapshot().campaigns.find(c=>c.id===campaign().id);return'# '+c.name+'\n\n'+sortEntries(c.entries,sort).map(e=>'## '+(e.adventureLabel||'日期未注明')+' · '+characterName(e.characterId)+'\n\n'+(campaign().markers.find(m=>m.id===e.markerId)?.name?'地点：'+campaign().markers.find(m=>m.id===e.markerId).name+'\n\n':'')+e.body+'\n\n---\n写入：'+e.createdAt+' · 序号 '+e.sequence+'\n').join('\n')+'\n## 物品清单\n\n'+c.items.map(i=>'- '+i.name+' × '+i.quantity+'（'+(i.ownerId===null?'公库':characterName(i.ownerId))+'）'+(i.description?'：'+i.description:'')).join('\n');}
 async function exportBackup(){

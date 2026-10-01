@@ -69,3 +69,11 @@ Additional visual research: [Getty, Decorated Text Page, Ms. Ludwig IX 19, fol. 
 - Acquired and license checked: 2026-10-01. Credit: The Walters Art Museum, Baltimore.
 - Display adaptation only: CSS crops the surrounding photographic support, scales the leaf to the page or scroll, and applies a warm translucent color plus luminosity blending. The original photograph's fibers and faint ruling remain visible. This is a designed reading surface, not a color-faithful facsimile. The scroll rollers and unfolding motion are interface graphics, not part of the historical photograph.
 - Used on left journal leaves, both inventory leaves, and in-map scrolls. The map itself occupies the entire right leaf without a decorative UI frame; the chart's own historical outline remains part of its source image.
+
+
+## Structural marginalia · 2026-10-01
+
+- `dist/assets/rubric-junction-v7.png`: 2172 × 724, RGBA, true alpha transparency, original generated output unchanged. One complete horizontal red/gold painted rule joining a seated scribe, a winged dragon and ivy stems descending at both ends. It is aligned to the gold field's lower boundary and shown whole, without slicing. The figures cross the structural boundary of the reading page.
+- Generated with built-in ImageGen in one call, using the user's self-made medieval character sheet as a visual style reference. The user's reference image is not included in this repository. The new asset is original supporting illustration, not a historical folio or game asset; generated-art reuse terms above apply. [Exact prompt](illumination-v7-prompt.md).
+- `dist/assets/manuscript-diaper.svg` and `dist/assets/gold-stipple.svg`: code-native interface ornament, created for this project (MIT), not scanned gold leaf. Repeating lozenge whitework and a stippled gold-color field support responsive layout without stretching raster borders.
+- The real page ground remains Walters W.183 fol.126v (CC0). Its separate source status is unchanged.
