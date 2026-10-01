@@ -1,0 +1,41 @@
+/* A parchment title tablet and loose colophon rest on a sloped writing board. */
+html{background:#38271b}
+body{background:#6e4c2f url('assets/scribes-desk-v8.png') center/100% 100% fixed no-repeat}
+#app{padding:14px 0 25px;min-height:100dvh}
+.workspace{min-height:0}
+.masthead{position:relative;isolation:isolate;margin:0 26px;height:70px;padding:10px 25px;border:1px solid #574727;border-radius:1px;background:linear-gradient(#f2e6cbd6,#e7d1a6d6),url('assets/walters-w183-126v.jpg') center/110% 500%;box-shadow:0 3px 8px #2a190a55,inset 0 0 0 2px #ccab56,inset 0 0 0 4px #334964}
+.masthead::before{content:"";position:absolute;inset:5px;z-index:-1;pointer-events:none;border-block:1px solid #ad914a;border-inline:7px solid #953c32;background:url('assets/penwork-frieze-v8.svg') left top/84px 7px repeat-x,url('assets/penwork-frieze-v8.svg') left bottom/84px 7px repeat-x}
+.masthead::after{content:"";position:absolute;inset:-5px;pointer-events:none;background:url('assets/quatrefoil-v8.svg') top left/24px 24px no-repeat,url('assets/quatrefoil-v8.svg') top right/24px 24px no-repeat,url('assets/quatrefoil-v8.svg') bottom left/24px 24px no-repeat,url('assets/quatrefoil-v8.svg') bottom right/24px 24px no-repeat}
+.wordmark{font-size:24px;letter-spacing:4px;gap:9px;white-space:nowrap;color:#7c2e28}
+.seal{font-size:0;width:31px;height:35px;border:0;outline:0;box-shadow:none;background:transparent url('assets/quatrefoil-v8.svg') center/contain no-repeat}
+.campaign-switch{padding-left:20px;border-left:1px solid #ae8d4680}
+.campaign-switch select{background:none;border-bottom:1px solid #8c633b;font-size:15px;color:#553c29}
+.header-actions{padding-left:16px;border-left:1px solid #ae8d4680}
+.character-button{border-left:0}
+.masthead .avatar{border-radius:45% 45% 40% 40%;outline:1px solid #a4823f;outline-offset:2px;width:28px;height:32px}
+.spine-bottom .nav-tab{color:#f1ddb0;text-shadow:0 1px 2px #27170b}
+.book-spread{height:calc(100dvh - 254px);box-shadow:0 13px 18px #23130677,0 3px 0 1px #b68e48,inset 0 0 0 2px #c49d5c}
+.book-page:not(.turning-leaf)::after{display:block;position:absolute;inset:auto auto 42px 9px;width:36px;height:142px;transform:none;background:url('assets/acanthus-divider-v4.png') center/contain no-repeat;opacity:.85;mix-blend-mode:multiply;z-index:-1;pointer-events:none}
+.book-page.page-right:not(.turning-leaf)::after{left:auto;right:9px;transform:scaleX(-1)}
+.atlas-book>.book-page.page-right::after{display:none}
+.status-bar{position:relative;width:fit-content;max-width:calc(100% - 70px);height:auto;min-height:32px;gap:30px;margin:0 auto;padding:5px 29px;color:#614629;background:linear-gradient(#ecddbecc,#ecddbecc),url('assets/walters-w183-126v.jpg') center/110% 400%;border:1px solid #967747;box-shadow:0 2px 5px #2b190855,inset 0 0 0 2px #ecdcb1;line-height:1.7;font-size:11px;flex-wrap:wrap;justify-content:center}
+.status-bar::before,.status-bar::after{content:"";position:absolute;top:0;bottom:0;width:8px;background:#254b73 url('assets/manuscript-diaper.svg') center/30px 20px;border-inline:1px solid #bf9d4d}
+.status-bar::before{left:0}.status-bar::after{right:0;background-color:#8c302c}
+.edition{color:#7a3e2e}
+@media(min-width:1450px){.masthead{margin-inline:42px}.book-page:not(.turning-leaf)::after{width:48px;height:180px;left:18px}.book-page.page-right:not(.turning-leaf)::after{left:auto;right:18px}}
+@media(max-width:1100px){#app{padding-top:12px}.masthead{margin-inline:14px;padding-inline:21px;height:67px}.wordmark{font-size:21px;letter-spacing:2px}.campaign-switch{padding-left:14px}.header-actions{padding-left:10px}.book-spread{height:calc(100dvh - 246px)}.book-page:not(.turning-leaf)::after{width:28px;height:126px;left:9px}.book-page.page-right:not(.turning-leaf)::after{right:9px;left:auto}}
+@media(max-width:850px){.masthead{margin-inline:9px;min-height:65px;height:auto;padding:14px 20px;gap:8px}.wordmark{font-size:19px;gap:5px}.seal{width:23px;height:28px}.campaign-switch{padding-left:8px}.campaign-switch select{font-size:13px;max-width:140px}.header-actions{padding-left:8px}.book-spread{height:calc(100dvh - 248px)}.book-page:not(.turning-leaf)::after{width:19px;height:100px;left:9px}.book-page.page-right:not(.turning-leaf)::after{left:auto;right:9px}.status-bar{font-size:10px;gap:12px;padding:5px 22px}}
+@media(max-width:640px){#app{padding-top:10px}.masthead{padding:14px 17px;gap:8px;justify-content:space-between}.wordmark{font-size:19px;letter-spacing:2px}.campaign-switch{order:3;width:100%;margin:0;border:0;border-top:1px solid #b1935266;padding:3px 0 0;justify-content:center}.campaign-switch select{max-width:230px;flex:1;text-align:center}.header-actions{padding:0;border:0;margin-left:auto}.book-spread{height:auto}.status-bar{max-width:calc(100% - 32px);gap:3px 13px;padding:6px 20px}.book-page:not(.turning-leaf)::after{width:22px;height:100px}.spine-bottom .nav-tab{min-height:36px}}
+@media print{body{background:white}#app{padding:0}.masthead,.status-bar,.book-page::after{display:none!important}}
+
+/* Labels have their own paper backing so they remain readable over uneven wood. */
+.spine>.nav-tab .nav-capital{position:relative;z-index:1}
+.spine>.nav-tab .nav-label{margin-left:-9px;padding:5px 12px 6px 11px;background:linear-gradient(#f3e6cde8,#e6d1aee8),url('assets/walters-w183-126v.jpg') center/160% 450%;color:#533728;box-shadow:0 1px 3px #2a180a44;border-block:1px solid #b6974a}
+.spine>.nav-tab.active .nav-label{color:#842c23;border-bottom:3px double #8e3429}
+.spine>.nav-tab.active .nav-label::after{background:#8e3429}
+.spine>.nav-tab:hover .nav-label{color:#882e23}
+.spine-bottom .nav-tab{color:#f9e9c8;text-shadow:0 1px 3px #211206,0 0 5px #211206}
+.inventory-book .ledger-entries{margin-top:clamp(45px,5.5vw,92px)}
+.catalog-summary{margin-bottom:clamp(45px,5.5vw,92px)}
+@media(min-width:641px){.book-spread{min-height:620px}}
+@media(max-width:640px){.spine>.nav-tab .nav-label{margin:0;padding:3px 7px 5px}.inventory-book .ledger-entries,.catalog-summary{margin-top:0}.inventory-book .ledger-entries{margin-top:48px}.catalog-summary{margin-bottom:45px}}

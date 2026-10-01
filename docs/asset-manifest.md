@@ -77,3 +77,18 @@ Additional visual research: [Getty, Decorated Text Page, Ms. Ludwig IX 19, fol. 
 - Generated with built-in ImageGen in one call, using the user's self-made medieval character sheet as a visual style reference. The user's reference image is not included in this repository. The new asset is original supporting illustration, not a historical folio or game asset; generated-art reuse terms above apply. [Exact prompt](illumination-v7-prompt.md).
 - `dist/assets/manuscript-diaper.svg` and `dist/assets/gold-stipple.svg`: code-native interface ornament, created for this project (MIT), not scanned gold leaf. Repeating lozenge whitework and a stippled gold-color field support responsive layout without stretching raster borders.
 - The real page ground remains Walters W.183 fol.126v (CC0). Its separate source status is unchanged.
+
+
+## Historiated navigation, varied page scenes and writing desk · 2026-10-01
+
+- `dist/assets/initial-m-v8.png`: 1254 × 1254, RGBA, 2,849,154 bytes. Original generated output, unchanged.
+- `dist/assets/initial-d-v8.png`: 1254 × 1254, RGBA, 2,879,520 bytes. Original generated output, unchanged.
+- `dist/assets/initial-s-v8.png`: 1254 × 1254, RGBA, 2,812,547 bytes. Original generated output, unchanged.
+- `dist/assets/catalog-junction-v8.png`: 2172 × 724, RGBA, 873,088 bytes. Original generated output, unchanged.
+- `dist/assets/satchel-junction-v8.png`: 2172 × 724, RGBA, 834,585 bytes. Original generated output, unchanged.
+- `dist/assets/vault-junction-v8.png`: 2172 × 724, RGBA, 1,071,445 bytes. Original generated output, unchanged.
+- `dist/assets/scribes-desk-v8.png`: 1536 × 1024, RGB, 2,622,315 bytes. Original generated output, unchanged.
+
+Created with built-in ImageGen; the six illuminations retain genuine alpha and are displayed whole. The naturalistic desk is a designed setting, not a photograph of an authenticated medieval object. Generated-asset reuse terms stated above apply. [Exact prompts and output provenance](illumination-v8-prompts.md); [measured image checks](illumination-v8-asset-qa.json).
+
+`quatrefoil-v8.svg` and `penwork-frieze-v8.svg` are code-native responsive ornament under MIT, following the user’s reference emphasis on colored rails, small corner flowers and gold penwork. The supplied manuscript/game screenshots are visual references only and are not published. Existing W.183 parchment retains its separate CC0 source status.

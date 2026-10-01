@@ -1,0 +1,90 @@
+[
+  {
+    "file": "initial-m-v8.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "bytes": 2849154,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "initial-d-v8.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "bytes": 2879520,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "initial-s-v8.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "bytes": 2812547,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "catalog-junction-v8.png",
+    "size": [
+      2172,
+      724
+    ],
+    "mode": "RGBA",
+    "bytes": 873088,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "satchel-junction-v8.png",
+    "size": [
+      2172,
+      724
+    ],
+    "mode": "RGBA",
+    "bytes": 834585,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "vault-junction-v8.png",
+    "size": [
+      2172,
+      724
+    ],
+    "mode": "RGBA",
+    "bytes": 1071445,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "scribes-desk-v8.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 2622315,
+    "alpha_extrema": null
+  }
+]

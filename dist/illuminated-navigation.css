@@ -1,0 +1,52 @@
+/* Whole historiated initials are the navigation; the Chinese rubric names stay live text. */
+.spine{gap:27px;padding:5px 38px 0;min-height:89px;align-items:center}
+.spine>.nav-tab{padding:0 3px;gap:10px;min-width:0;min-height:82px;letter-spacing:2px;background:none;border:0;box-shadow:none;filter:none;color:#e1c797;overflow:visible}
+.spine>.nav-tab .nav-capital{display:block;width:78px;height:78px;flex-shrink:0;transition:transform .2s ease}
+.nav-capital img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.spine>.nav-tab .nav-label{position:relative;padding:8px 0;white-space:nowrap;font-size:15px}
+.spine>.nav-tab.active,.spine>.nav-tab:hover{color:#fff0c5;background:none;box-shadow:none;filter:none}
+.spine>.nav-tab.active::after{display:none}
+.spine>.nav-tab.active .nav-label{border-bottom:3px double #d8b66b}
+.spine>.nav-tab.active .nav-label::after{content:"";position:absolute;bottom:-5px;left:calc(50% - 3px);width:6px;height:6px;background:#ddbd73;transform:rotate(45deg)}
+.spine>.nav-tab:hover .nav-capital{transform:translateY(-2px)}
+.spine>.nav-tab:focus-visible{outline:2px solid #e9c878;outline-offset:3px;background:#ffffff09}
+.spine-bottom .nav-tab:focus-visible{outline:2px solid #e9c878;outline-offset:2px}
+.main-surface{padding-top:6px;padding-bottom:20px}
+.book-spread{height:calc(100dvh - 224px)}
+/* The catalog is a green rubric with a book-reading bestiary at its lower boundary. */
+.journal-book>.page-right>.leaf-heading{background-color:#315b48}
+.journal-book>.page-right .illuminated-initial{background-color:#274c79}
+.catalog-summary{position:relative;isolation:isolate;min-height:80px;display:flex;align-items:center;justify-content:center;padding:12px 25% 22px;margin-bottom:42px;border-bottom:0}
+.page-junction{position:absolute;bottom:0;left:-10px;width:calc(100% + 20px);max-width:none;height:auto;transform:translateY(50%);pointer-events:none;user-select:none;z-index:1}
+.catalog-summary>span{position:relative;z-index:2}
+.journal-book>.page-right .entry-list{padding-left:16px;padding-right:16px}
+.entry-list-button{position:relative;padding-left:14px;padding-right:8px}
+.entry-list-button::before{content:"";position:absolute;left:0;top:29px;width:5px;height:5px;transform:rotate(45deg);background:#922c2b;border:1px solid #a78039}
+.entry-list-button:nth-child(even)::before{background:#2a557a}
+.entry-list-button.active{padding-left:14px;box-shadow:none;background:#c69b4024}
+/* Different pigment fields and complete narrative junctions identify the paired inventories. */
+.inventory-book>.page-left>.leaf-heading{background-color:#882c2c}
+.inventory-book>.page-left .illuminated-initial{background-color:#244d79}
+.inventory-book>.page-right>.leaf-heading{background-color:#315747}
+.inventory-book>.page-right .illuminated-initial{background-color:#8a292a}
+.inventory-frontispiece{display:flex;justify-content:center;text-align:center;min-height:148px;padding:14px 23% 28px;isolation:isolate}
+.inventory-frontispiece>div{position:relative;z-index:2;min-width:0;width:100%}
+.inventory-frontispiece h3{font-size:23px;line-height:1.5;margin:0 0 3px;letter-spacing:1px}
+.inventory-frontispiece::after{display:none}
+.inventory-frontispiece .text-button{min-height:36px;padding:3px 0}
+.inventory-owner{display:block;line-height:36px}
+.inventory-count{white-space:nowrap;font-size:13px;margin:0}
+.inventory-count span{padding:0 3px}
+.inventory-book .ledger-entries{margin-top:44px;padding-top:0}
+.inventory-book .page-left .item-index{background-color:#882c2c}
+.inventory-book .page-right .item-index{background-color:#315747}
+.inventory-book .page-left .item-row:nth-child(even) .item-index{background-color:#244d79}
+.inventory-book .page-right .item-row:nth-child(even) .item-index{background-color:#882c2c}
+.inventory-book .page-right .item-row::after{background-color:#315747}
+.inventory-book .page-right .item-row:nth-child(even)::after{background-color:#244d79}
+@media(min-width:1450px){.spine{padding-left:54px}.nav-capital{width:84px;height:84px}.inventory-frontispiece{min-height:164px}}
+@media(max-width:1100px){.spine{padding:5px 25px 0;gap:20px;min-height:87px}.spine>.nav-tab{gap:7px;min-height:80px}.spine>.nav-tab .nav-capital{width:73px;height:73px}.spine>.nav-tab .nav-label{font-size:14px}.book-spread{height:calc(100dvh - 219px)}.inventory-frontispiece{min-height:139px}.inventory-frontispiece h3{font-size:21px}.inventory-book .ledger-entries{margin-top:38px}}
+@media(max-width:850px){.spine{padding:4px 18px 0;gap:13px;min-height:84px}.spine>.nav-tab{min-height:77px;gap:5px;letter-spacing:1px}.spine>.nav-tab .nav-capital{width:65px;height:65px}.spine>.nav-tab .nav-label{font-size:13px}.spine-bottom{gap:0}.spine-bottom .nav-tab{padding:5px 6px}.book-spread{height:calc(100dvh - 221px)}.inventory-frontispiece{min-height:140px;padding:14px 20% 25px}.inventory-frontispiece h3{font-size:19px}.inventory-count{font-size:11px}.inventory-owner{font-size:11px;line-height:32px}.inventory-frontispiece .text-button{font-size:12px;min-height:32px}.inventory-book .ledger-entries{margin-top:32px}.catalog-summary{min-height:74px;margin-bottom:30px}.journal-book>.page-right .entry-list{padding-left:8px;padding-right:8px}.item-index{display:flex}.page-junction{left:-7px;width:calc(100% + 14px)}}
+@media(max-width:640px){.spine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 9px;padding:5px 15px 0}.spine>.nav-tab{display:flex;flex-direction:column;gap:0;min-height:90px;letter-spacing:1px;padding:0}.spine>.nav-tab .nav-capital{width:64px;height:64px}.spine>.nav-tab .nav-label{font-size:12px;padding:2px 0 5px}.spine-bottom{grid-column:1/-1;justify-content:flex-end;margin:0;height:32px}.spine-bottom .nav-tab{min-height:32px;padding:0 8px;font-size:11px}.main-surface{padding-top:4px}.inventory-frontispiece{min-height:149px;padding-inline:22%}.inventory-frontispiece h3{font-size:21px}.inventory-count{font-size:12px}.inventory-book .ledger-entries{margin-top:35px}.catalog-summary{min-height:78px;margin-bottom:35px}.book-spread{height:auto}}
+@media(prefers-reduced-motion:reduce){.spine>.nav-tab .nav-capital{transition:none}.spine>.nav-tab:hover .nav-capital{transform:none}}
+@media print{.spine,.page-junction{display:none}.catalog-summary,.inventory-frontispiece{min-height:0;margin-bottom:10px;padding:10px}.inventory-book .ledger-entries{margin-top:0}}
