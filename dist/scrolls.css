@@ -1,0 +1,53 @@
+/* Real calf parchment: Walters W.183, fol.126v. The original JPEG is unmodified. */
+.book-page{background-color:#e9d2a8;background-image:linear-gradient(#fae3b9b5,#efd4a7bc),url('assets/walters-w183-126v.jpg');background-size:auto,120% 116%;background-position:center,56% 52%;background-repeat:no-repeat;background-blend-mode:normal,luminosity}
+.atlas-book>.page-right{padding:0;isolation:isolate;overflow:hidden}
+.atlas-book>.page-right::before,.atlas-book>.page-right::after{display:none}
+.atlas-book .map-stage{position:absolute;inset:0;display:block;margin:0;width:100%;height:100%;min-height:0!important;max-height:none;border:0;outline:0;box-shadow:none;border-radius:0;background:transparent;z-index:0}
+.atlas-book .map-image{mix-blend-mode:multiply}
+.atlas-book .map-canvas{background:transparent}
+.atlas-controls{position:absolute;top:14px;left:18px;right:18px;display:flex;align-items:center;gap:5px;padding:3px 6px;background:#ead4b1eb;box-shadow:0 2px 9px #54381725;z-index:4;border-bottom:1px solid #ad8d5855}
+.atlas-controls select{flex:1;width:0;min-width:0;font-size:13px;min-height:40px;border:0;background:transparent;padding:7px 3px;max-width:none}
+.atlas-controls .text-button{padding:6px 7px;font-size:13px;white-space:nowrap}
+.atlas-controls .map-tools-toggle{font-size:20px;width:36px;min-height:40px;padding:0}
+.atlas-tools{position:absolute;z-index:5;top:69px;right:18px;left:18px;padding:8px 12px;background:#ead4b1f5;border:1px solid #b49557;box-shadow:0 3px 13px #35251233}
+.atlas-tools[hidden]{display:none}.atlas-tools label{display:flex;align-items:center;gap:7px;font-size:12px}.atlas-tools select{width:100%;min-width:0;min-height:42px;font-size:13px;background:transparent;border:0;border-bottom:1px solid #b2955d}
+.atlas-tools p{font-size:12px;line-height:1.8;color:#745b38;margin:9px 0 0}
+.atlas-bottom-controls{position:absolute;left:18px;bottom:17px;display:flex;align-items:center;gap:6px;z-index:4}
+.atlas-bottom-controls .button{min-height:42px;background:#eedab9ed;box-shadow:0 2px 6px #432f1533;color:#733827;border:1px solid #bba06d;font-size:13px;padding:6px 12px}
+.atlas-bottom-controls .button.active{background:#893a2e;color:#ffe7b5}
+.atlas-zoom{position:absolute;right:17px;bottom:17px;z-index:4;display:flex;flex-direction:column;align-items:center;background:#eedab9ed;box-shadow:0 2px 6px #432f152b}
+.atlas-zoom .icon-button{width:40px;height:40px;min-height:40px;font-size:23px}.atlas-zoom .zoom-value{padding:4px 3px;font-size:11px;min-width:40px}
+.atlas-book .map-pin{z-index:3}.atlas-book .map-pin[aria-expanded=true] span{outline:2px solid #ab772b;outline-offset:3px}
+.map-scroll-host{position:absolute;inset:0;z-index:6;pointer-events:none}
+.map-scroll{position:absolute;width:var(--scroll-width,252px);height:var(--scroll-height,370px);pointer-events:auto;filter:drop-shadow(3px 8px 9px #32231355);outline:0;isolation:isolate}
+.map-scroll[hidden]{display:none}
+.scroll-paper{position:absolute;inset:6px 7px;display:flex;flex-direction:column;padding:23px 18px 18px;background-color:#ead5b0;background-image:linear-gradient(#fbe7c3bf,#f0d6aabc),url('assets/walters-w183-126v.jpg');background-size:auto,120% 116%;background-position:center,56% 52%;background-blend-mode:normal,luminosity;border-left:1px solid #a4814644;border-right:1px solid #a4814644;clip-path:polygon(1% 0,98% 0,100% 28%,99% 61%,100% 100%,1% 100%,0 73%,1% 34%)}
+.scroll-roll{position:absolute;left:0;right:0;height:15px;border-radius:45% / 40%;background:linear-gradient(#a78248 0%,#e8cf9e 16%,#f8e7c3 42%,#d4b77e 74%,#8b6737 100%);box-shadow:0 1px 2px #64432166;z-index:2;pointer-events:none}
+.scroll-roll.top{top:0}.scroll-roll.bottom{bottom:0;transform:rotate(180deg)}
+.scroll-roll::before,.scroll-roll::after{content:"";position:absolute;top:1px;width:12px;height:12px;border-radius:50%;border:1px solid #876337;background:radial-gradient(ellipse at center,#785732 0 15%,#e4c89c 20% 42%,#997241 46% 58%,#e5cb9f 65%);box-shadow:1px 0 2px #76512d55}
+.scroll-roll::before{left:-4px}.scroll-roll::after{right:-4px}
+.scroll-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:5px;border-bottom:1px solid #ab855c66;padding-bottom:9px;margin-bottom:10px;flex-shrink:0}
+.scroll-heading h3{font-size:19px;color:#733828;line-height:1.6;letter-spacing:1px;margin:0;overflow-wrap:anywhere;max-height:3.2em;overflow:auto}
+.scroll-heading .icon-button{width:30px;min-width:30px;min-height:32px;height:32px;font-size:23px;margin:-6px -7px 0 0;color:#755936}
+.scroll-meta{font-size:11px;color:#7a5c38;line-height:1.9;margin:0 0 9px;flex-shrink:0}
+.scroll-excerpt{font-size:14px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere;min-height:0;overflow:auto;overscroll-behavior:contain;flex:1;padding-right:3px;margin:0 0 7px;scrollbar-width:thin;scrollbar-color:#ac8651 transparent}
+.scroll-entry-nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ad8b5755;min-height:37px;flex-shrink:0;font-size:11px;color:#765b39}
+.scroll-entry-nav .icon-button{min-height:34px;height:34px;width:32px;font-size:22px}
+.scroll-actions{display:flex;justify-content:space-between;gap:4px;flex-shrink:0;border-top:1px solid #ad8b5755}
+.scroll-actions .text-button{font-size:12px;min-height:42px;padding:5px 3px;white-space:nowrap}
+.map-scroll.unrolling .scroll-paper{animation:scroll-sheet-unroll .48s ease-out both}
+.map-scroll.unrolling .scroll-roll.top{animation:scroll-roll-top .48s ease-out both}
+.map-scroll.unrolling .scroll-roll.bottom{animation:scroll-roll-bottom .48s ease-out both}
+@keyframes scroll-sheet-unroll{from{clip-path:inset(46% 0 46% 0)}to{clip-path:inset(0)}}
+@keyframes scroll-roll-top{from{transform:translateY(calc(var(--scroll-height) * .46))}to{transform:translateY(0)}}
+@keyframes scroll-roll-bottom{from{transform:translateY(calc(var(--scroll-height) * -.46)) rotate(180deg)}to{transform:translateY(0) rotate(180deg)}}
+@media(max-width:850px){.atlas-controls{left:12px;right:12px;top:12px;padding-left:4px;padding-right:4px}.atlas-controls select,.atlas-controls .text-button{font-size:12px}.atlas-controls .text-button{padding:5px}.atlas-bottom-controls{left:12px;bottom:14px;gap:4px}.atlas-bottom-controls .button{font-size:12px;padding:6px 9px}.atlas-zoom{right:12px;bottom:14px}.scroll-paper{padding:21px 14px 15px}.scroll-heading h3{font-size:17px}.scroll-excerpt{font-size:14px}.scroll-actions .text-button{font-size:11px}.atlas-tools{left:12px;right:12px}}
+@media(prefers-reduced-motion:reduce){.map-scroll.unrolling .scroll-paper,.map-scroll.unrolling .scroll-roll{animation:none}}
+@media print{.atlas-controls,.atlas-tools,.atlas-bottom-controls,.atlas-zoom,.map-scroll-host{display:none}.book-page{background:white}.atlas-book .map-stage{position:relative;height:550px}}
+
+.atlas-book>.page-right{border:0}
+
+/* Prevent native focus scrolling from competing with the map camera. */
+.atlas-book .map-stage{overflow:clip}
+
+.scroll-meta{overflow-wrap:anywhere;max-height:5.7em;overflow:auto}

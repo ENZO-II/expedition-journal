@@ -1,9 +1,10 @@
+import{placeScroll}from'./scroll-position.js';
 import{mountMap}from'./map-view.js';
 import{VERSION,uid,escapeHtml as h,sortEntries,transferItem,validateData,createCampaign,demoState}from'./domain.js';
 const $=s=>document.querySelector(s),KEY=(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa')?'expedition-journal-qa-v1':'expedition-journal-v1'),COLORS=['#702d38','#283d59','#416044','#88552f','#655080'];
 let state,storageBlocked=false;
 try{const raw=localStorage.getItem(KEY);state=raw?validateData(JSON.parse(raw)):demoState();}catch(e){state=demoState();storageBlocked=true;}
-let view='map',selectedMap=null,selectedMarker='marker_begin',selectedEntry='entry_begin',sort='adventure',author='',search='',editing=null,placing=false,movingMarker=null,mapCleanup=null,saveTimer,toastTimer,undoSnapshot=null;
+let view='map',selectedMap=null,selectedMarker='marker_begin',selectedEntry='entry_begin',sort='adventure',author='',search='',editing=null,placing=false,movingMarker=null,mapCleanup=null,mapFrame=null,openMarker=null,scrollEntryIndex=0,saveTimer,toastTimer,undoSnapshot=null;
 const blobs=new Map(),blobUrls=new Map();
 const dbPromise=new Promise((resolve,reject)=>{const request=indexedDB.open('expedition-journal-assets',1);request.onupgradeneeded=()=>request.result.createObjectStore('maps');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});
 dbPromise.catch(()=>{});
@@ -43,7 +44,7 @@ function saveDraft(){
  if(!entry){$('#save-status').textContent='空白草稿';return true;}
  if(!persist()){state=before;return false;}selectedEntry=entry.id;return true;
 }
-function setView(next){if(!flushDraft())return;const previous=view;editing=null;placing=false;movingMarker=null;view=next;render(previous!==next?(['map','journal','bag','vault'].indexOf(next)>['map','journal','bag','vault'].indexOf(previous)?'forward':'backward'):null);}
+function setView(next){if(!flushDraft())return;const previous=view;openMarker=null;editing=null;placing=false;movingMarker=null;view=next;render(previous!==next?(['map','journal','bag','vault'].indexOf(next)>['map','journal','bag','vault'].indexOf(previous)?'forward':'backward'):null);}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 $('#campaign-select').onchange=e=>{if(!flushDraft()){e.target.value=campaign().id;return;}mutate(()=>state.currentCampaignId=e.target.value);selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';editing=null;render();};
 $('#new-campaign').onclick=()=>{if(!flushDraft())return;dialog('创建战役','<form id="campaign-form"><label class="field">战役名称<input name="name" maxlength="100" required placeholder="为这一段旅程命名"></label><p class="dialog-copy">新战役拥有自己的角色、地图、日记与公库。目前保存于此设备。</p><div class="dialog-actions"><button class="button primary">创建战役</button></div></form>');$('#campaign-form').onsubmit=e=>{e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name)return;if(mutate(()=>{const c=createCampaign(name);state.campaigns.push(c);state.currentCampaignId=c.id;})){closeDialog();editing=null;selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';view='map';render();showCharacters();}};};
@@ -88,15 +89,53 @@ function readingPage(){
 function renderMap(){
  const c=campaign(),map=c.maps.find(m=>m.id===selectedMap)??c.maps[0];selectedMap=map?.id??null;
  if(selectedMarker&&!c.markers.some(m=>m.id===selectedMarker&&m.mapId===selectedMap)){selectedMarker=null;selectedEntry=null;}
- const pins=c.markers.filter(m=>m.mapId===selectedMap),markers=pins.map((m,i)=>{const e=c.entries.find(e=>e.markerId===m.id);return'<button class="map-pin '+(selectedMarker===m.id?'selected':'')+'" data-marker="'+h(m.id)+'" style="left:'+m.x*100+'%;top:'+m.y*100+'%;--pin-color:'+characterColor(e?.characterId)+'" aria-label="'+h(m.name)+'" title="'+h(m.name)+'"><span><b>'+String(i+1)+'</b></span></button>';}).join('');
+ if(openMarker&&!c.markers.some(m=>m.id===openMarker&&m.mapId===selectedMap))openMarker=null;
+ const pins=c.markers.filter(m=>m.mapId===selectedMap),markers=pins.map((m,i)=>{const e=c.entries.find(e=>e.markerId===m.id);return'<button class="map-pin '+(selectedMarker===m.id?'selected':'')+'" data-marker="'+h(m.id)+'" style="left:'+m.x*100+'%;top:'+m.y*100+'%;--pin-color:'+characterColor(e?.characterId)+'" aria-label="'+h(m.name)+'" title="'+h(m.name)+'" aria-expanded="'+(openMarker===m.id)+'" aria-controls="map-scroll"><span><b>'+String(i+1)+'</b></span></button>';}).join('');
  const mapImage=map?.asset==='assets/portolan.jpg'?'<svg class="map-image historic-map" viewBox="0 0 8615 3975" aria-label="约1550年的地中海航海图" role="img"><image href="assets/portolan.jpg" width="3975" height="8615" transform="translate(0 3975) rotate(-90)"/></svg>':'<img id="custom-map-image" class="map-image" data-asset="'+h(map?.asset??'')+'" alt="'+h(map?.name??'地图')+'" draggable="false">';
- const right=pageHead('地图','II','<button class="text-button" id="import-map">导入</button><button class="button '+(placing?'active':'primary')+'" id="place-marker" '+(!map?'disabled':'')+'>'+(placing?'取消标注':'＋ 标注')+'</button>')+
- '<div class="map-topbar"><label class="sr-only" for="map-select">当前地图</label><select id="map-select">'+(c.maps.length?c.maps.map(m=>'<option value="'+h(m.id)+'"'+selected(selectedMap,m.id)+'>'+h(m.name)+'</option>').join(''):'<option>尚无地图</option>')+'</select><div class="map-actions"><button class="icon-button" id="zoom-out" aria-label="缩小地图">−</button><span class="zoom-value">100%</span><button class="icon-button" id="zoom-in" aria-label="放大地图">＋</button></div></div>'+
- '<div class="map-instructions"><span id="map-help">'+(placing?(movingMarker?'点按新的位置；拖动仍可浏览地图':'点按地图添加标注；拖动可浏览地图'):'拖动浏览 · 滚轮或双指缩放')+'</span><button class="text-button" id="reset-map">全图</button></div>'+
+ const right='<h2 class="sr-only">地图</h2><span class="sr-only" id="map-help">拖动浏览地图，滚轮或双指缩放。键盘方向键移动，加减号缩放，0 查看全图。</span>'+
  '<div class="map-stage '+(placing?'placing':'')+'" id="map-stage" tabindex="0" aria-label="可拖动的地图" aria-describedby="map-help">'+(map?'<div class="map-canvas" id="map-canvas">'+mapImage+markers+'</div>':empty('导入一张地图','支持 JPG、PNG 和 WebP。','<button class="button" id="empty-import-map">选择地图图片</button>'))+'</div>'+
- '<div class="map-bottom"><span>'+pins.length+' 处标注</span><button class="text-button" id="rename-marker" '+(!selectedMarker?'disabled':'')+'>地点设置</button></div>'+
- '<div class="place-index" aria-label="地图地点">'+pins.map((m,i)=>'<button class="place-link '+(m.id===selectedMarker?'active':'')+'" data-place="'+h(m.id)+'"><span>'+String(i+1).padStart(2,'0')+'</span>'+h(m.name)+'</button>').join('')+'</div>';
+ '<div class="atlas-controls"><label class="sr-only" for="map-select">当前地图</label><select id="map-select">'+(c.maps.length?c.maps.map(m=>'<option value="'+h(m.id)+'"'+selected(selectedMap,m.id)+'>'+h(m.name)+'</option>').join(''):'<option>尚无地图</option>')+'</select><button class="text-button" id="import-map">导入</button><button class="icon-button map-tools-toggle" id="map-tools-toggle" aria-label="地图地点与工具" aria-controls="atlas-tools" aria-expanded="false">⋯</button></div>'+
+ '<div class="atlas-tools" id="atlas-tools" hidden><label for="place-select">地点<select id="place-select"><option value="">选择一处标注</option>'+pins.map(m=>'<option value="'+h(m.id)+'">'+h(m.name)+'</option>').join('')+'</select></label><button class="text-button" id="rename-marker" '+(!selectedMarker?'disabled':'')+'>当前地点设置</button><p>拖动浏览 · 滚轮或双指缩放'+(placing?'<br>点按地图'+(movingMarker?'选择新的位置':'添加标注'):'')+'</p></div>'+
+ '<div class="atlas-bottom-controls"><button class="button '+(placing?'active':'')+'" id="place-marker" '+(!map?'disabled':'')+'>'+(placing?'取消标注':'＋ 标注')+'</button><button class="button" id="reset-map" '+(!map?'disabled':'')+'>全图</button></div>'+
+ '<div class="atlas-zoom"><button class="icon-button" id="zoom-in" aria-label="放大地图" '+(!map?'disabled':'')+'>＋</button><span class="zoom-value" aria-live="off">100%</span><button class="icon-button" id="zoom-out" aria-label="缩小地图" '+(!map?'disabled':'')+'>−</button></div><div class="map-scroll-host"></div>';
  return book(readingPage(),right,'atlas-book');
+}
+function scrollEntries(){return sortEntries(campaign().entries.filter(e=>e.markerId===openMarker),sort);}
+function positionMapScroll(layout=mapFrame){
+ if(layout)mapFrame=layout;
+ const node=$('#map-scroll'),marker=campaign().markers.find(m=>m.id===openMarker);
+ if(!node||!marker||!mapFrame)return;
+ const {frame:f,viewport:v}=mapFrame,p=placeScroll({x:f.x+marker.x*f.width,y:f.y+marker.y*f.height},v);
+ node.hidden=!p.visible;node.dataset.side=p.side;
+ Object.assign(node.style,{left:p.x+'px',top:p.y+'px'});
+ node.style.setProperty('--scroll-width',p.width+'px');node.style.setProperty('--scroll-height',p.height+'px');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&openMarker&&!$('#dialog').open){e.preventDefault();closeMapScroll(true);}});
+function closeMapScroll(focus=false){
+ const id=openMarker;openMarker=null;$('.map-scroll-host')?.replaceChildren();if($('#rename-marker'))$('#rename-marker').disabled=!selectedMarker;
+ document.querySelectorAll('[data-marker]').forEach(b=>{b.setAttribute('aria-expanded','false');if(focus&&b.dataset.marker===id)b.focus({preventScroll:true});});
+}
+function openPlace(id){
+ if(openMarker===id){closeMapScroll(true);return;}
+ openMarker=id;scrollEntryIndex=0;
+ const marker=campaign().markers.find(m=>m.id===id);if(marker)mapCleanup?.reveal?.(marker);
+ renderMapScroll(true);$('#scroll-close')?.focus({preventScroll:true});
+}
+function renderMapScroll(animate=false){
+ const host=$('.map-scroll-host'),marker=campaign().markers.find(m=>m.id===openMarker);if(!host||!marker)return;
+ const list=scrollEntries();scrollEntryIndex=Math.max(0,Math.min(scrollEntryIndex,list.length-1));const entry=list[scrollEntryIndex];
+ host.innerHTML='<aside class="map-scroll '+(animate?'unrolling':'')+'" id="map-scroll" role="dialog" aria-modal="false" aria-labelledby="scroll-title" tabindex="-1"><div class="scroll-paper"><div class="scroll-heading"><h3 id="scroll-title">'+h(marker.name)+'</h3><button class="icon-button" id="scroll-close" aria-label="收起地图卷轴">×</button></div>'+
+ (entry?'<p class="scroll-meta">'+h(characterName(entry.characterId))+' 署 · '+h(entry.adventureLabel||'日期未注明')+'<br>写于 '+h(timeText(entry.createdAt))+' · 第 '+entry.sequence+' 篇</p><div class="scroll-excerpt">'+h(entry.body||'（空白手记）')+'</div>':'<div class="scroll-excerpt">这里还没有手记。</div>')+
+ (list.length>1?'<div class="scroll-entry-nav"><button class="icon-button" id="scroll-prev" aria-label="卷轴上一篇" '+(scrollEntryIndex===0?'disabled':'')+'>‹</button><span>'+(scrollEntryIndex+1)+' / '+list.length+'</span><button class="icon-button" id="scroll-next" aria-label="卷轴下一篇" '+(scrollEntryIndex===list.length-1?'disabled':'')+'>›</button></div>':'')+
+ '<div class="scroll-actions">'+(entry?'<button class="text-button" id="scroll-read">在左页阅读</button>':'<button class="text-button" id="scroll-settings">地点设置</button>')+'<button class="text-button" id="scroll-write">＋ 写手记</button></div></div><span class="scroll-roll top" aria-hidden="true"></span><span class="scroll-roll bottom" aria-hidden="true"></span></aside>';
+ document.querySelectorAll('[data-marker]').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.marker===openMarker)));
+ positionMapScroll();if($('#rename-marker'))$('#rename-marker').disabled=false;
+ $('#scroll-close').onclick=()=>closeMapScroll(true);
+ $('#map-scroll').onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeMapScroll(true);}};
+ if($('#scroll-read'))$('#scroll-read').onclick=()=>{if(!flushDraft())return;selectedMarker=marker.id;selectedEntry=entry.id;author='';editing=null;closeMapScroll();render();$('.entry-title')?.setAttribute('tabindex','-1');$('.entry-title')?.focus({preventScroll:true});};
+ $('#scroll-write').onclick=()=>{if(!flushDraft())return;selectedMarker=marker.id;closeMapScroll();beginEntry();};
+ if($('#scroll-settings'))$('#scroll-settings').onclick=()=>editMarker(marker.id);
+ ['prev','next'].forEach((kind,i)=>{const button=$('#scroll-'+kind);if(button)button.onclick=()=>{scrollEntryIndex+=i?1:-1;renderMapScroll();const next=$('#scroll-'+kind);(next&&!next.disabled?next:$('#scroll-close'))?.focus({preventScroll:true});};});
 }
 function renderJournal(){
  const list=entriesForView();if(!list.some(e=>e.id===selectedEntry))selectedEntry=list[0]?.id??null;
@@ -112,20 +151,19 @@ function inventoryPage(vault){
 function renderInventory(){return book(inventoryPage(false),inventoryPage(true),'inventory-book');}
 function render(turn=null){
  const oldPage=turn&&!matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(turn==='backward'?'.page-left':'.page-right')?.cloneNode(true):null;
- if(mapCleanup){mapCleanup();mapCleanup=null;}
+ if(mapCleanup){mapCleanup();mapCleanup=null;}mapFrame=null;
  const c=campaign(),char=currentCharacter();
  $('#campaign-select').innerHTML=state.campaigns.map(x=>'<option value="'+h(x.id)+'"'+selected(c.id,x.id)+'>'+h(x.name)+'</option>').join('');
  $('#character-label').textContent=char?.name??'登记角色';$('#character-button .avatar').textContent=char?.name[0]??'＋';$('#character-button .avatar').style.background=char?.color??COLORS[0];
  document.querySelectorAll('[data-view]').forEach(b=>{const active=b.dataset.view===(view==='vault'?'bag':view);b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
  $('#main').innerHTML=view==='map'?renderMap():view==='journal'?renderJournal():renderInventory();
- bindContent();hydrateMap();
+ bindContent();hydrateMap();if(openMarker&&view==='map')renderMapScroll();
  if(oldPage){
   oldPage.classList.add('turning-leaf',turn);oldPage.inert=true;oldPage.setAttribute('aria-hidden','true');oldPage.removeAttribute('id');oldPage.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));
   document.querySelector('.book-spread').append(oldPage);
   oldPage.addEventListener('animationend',()=>oldPage.remove(),{once:true});setTimeout(()=>oldPage.remove(),850);
  }
 }
-function selectPlace(id){if(!flushDraft())return;editing=null;selectedMarker=id;selectedEntry=null;render();}
 function placePoint({x,y}){
  if(movingMarker){if(mutate(()=>Object.assign(campaign().markers.find(m=>m.id===movingMarker),{x,y}),true)){placing=false;movingMarker=null;render();toast('标注已移动',true);}}
  else markerForm(x,y);
@@ -148,11 +186,12 @@ function bindContent(){
  $('#finish-edit').onclick=()=>{if(flushDraft()){editing=null;render();}};
  }
  ['#import-map','#empty-import-map'].forEach(s=>{if($(s))$(s).onclick=()=>$('#map-upload').click();});
- if($('#map-select'))$('#map-select').onchange=e=>{if(!flushDraft())return;editing=null;selectedMap=e.target.value;selectedMarker=null;selectedEntry=null;render();};
- if($('#place-marker'))$('#place-marker').onclick=()=>{if(!flushDraft())return;editing=null;placing=!placing;movingMarker=null;render();};
- if($('#map-canvas'))mapCleanup=mountMap({stage:$('#map-stage'),canvas:$('#map-canvas'),key:campaign().id+':'+selectedMap,onPlace:placePoint,onMarker:selectPlace,isPlacing:()=>placing});
- document.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>selectPlace(b.dataset.place));
- if($('#rename-marker'))$('#rename-marker').onclick=()=>editMarker();
+ if($('#map-select'))$('#map-select').onchange=e=>{if(!flushDraft())return;editing=null;selectedMap=e.target.value;openMarker=null;selectedMarker=null;selectedEntry=null;render();};
+ if($('#place-marker'))$('#place-marker').onclick=()=>{if(!flushDraft())return;editing=null;openMarker=null;placing=!placing;movingMarker=null;render();};
+ if($('#map-canvas'))mapCleanup=mountMap({stage:$('#map-stage'),canvas:$('#map-canvas'),key:campaign().id+':'+selectedMap,onPlace:placePoint,onMarker:openPlace,onBackground:()=>closeMapScroll(),onCameraChange:positionMapScroll,isPlacing:()=>placing});
+ if($('#map-tools-toggle'))$('#map-tools-toggle').onclick=()=>{const panel=$('#atlas-tools');panel.hidden=!panel.hidden;$('#map-tools-toggle').setAttribute('aria-expanded',String(!panel.hidden));};
+ if($('#place-select'))$('#place-select').onchange=e=>{if(e.target.value){$('#atlas-tools').hidden=true;$('#map-tools-toggle').setAttribute('aria-expanded','false');openPlace(e.target.value);e.target.value='';}};
+ if($('#rename-marker'))$('#rename-marker').onclick=()=>editMarker(openMarker??selectedMarker);
  document.querySelectorAll('[data-new-item]').forEach(b=>b.onclick=()=>itemForm(null,b.dataset.newItem==='vault'?null:currentCharacter()?.id));
  document.querySelectorAll('[data-edit-item]').forEach(b=>b.onclick=()=>itemForm(b.dataset.editItem));
  document.querySelectorAll('[data-transfer-item]').forEach(b=>b.onclick=()=>transferForm(b.dataset.transferItem));
@@ -169,9 +208,9 @@ function beginEntry(id){
 }
 function deleteEntry(){const entry=campaign().entries.find(e=>e.id===selectedEntry);if(!entry)return;dialog('移除这一页？','<p class="dialog-copy">将移除这篇手记，地图上的地点会保留。完成后可以立即撤销。</p><div class="dialog-actions"><button class="button" id="cancel-delete">留下</button><button class="button danger" id="confirm-delete">移除手记</button></div>');$('#cancel-delete').onclick=closeDialog;$('#confirm-delete').onclick=()=>{if(mutate(()=>campaign().entries=campaign().entries.filter(e=>e.id!==entry.id),true)){closeDialog();selectedEntry=null;render();toast('手记已移除',true);}};}
 function markerForm(x,y){dialog('添加地图标注','<form id="marker-form"><label class="field">地点名称<input name="name" maxlength="100" required placeholder="这个地方叫什么？"></label><div class="dialog-actions"><button class="button primary">保存标注</button></div></form>');$('#marker-form').onsubmit=e=>{e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name)return;const id=uid('marker');if(mutate(()=>campaign().markers.push({id,mapId:selectedMap,name,x,y}))){closeDialog();placing=false;selectedMarker=id;selectedEntry=null;render();if(currentCharacter())beginEntry();else showCharacters();}};}
-function editMarker(){if(!flushDraft())return;const marker=campaign().markers.find(m=>m.id===selectedMarker);if(!marker)return;dialog('地点设置','<form id="marker-edit"><label class="field">地点名称<input name="name" maxlength="100" required value="'+h(marker.name)+'"></label><div class="dialog-actions"><button type="button" class="button" id="move-marker">移动位置</button><button type="button" class="button danger" id="remove-marker">移除标注</button><button class="button primary">保存</button></div><p class="inline-notice">移除标注会保留日记，解除它们与此地点的关联。</p></form>');
+function editMarker(id=selectedMarker){if(!flushDraft())return;const marker=campaign().markers.find(m=>m.id===id);if(!marker)return;dialog('地点设置','<form id="marker-edit"><label class="field">地点名称<input name="name" maxlength="100" required value="'+h(marker.name)+'"></label><div class="dialog-actions"><button type="button" class="button" id="move-marker">移动位置</button><button type="button" class="button danger" id="remove-marker">移除标注</button><button class="button primary">保存</button></div><p class="inline-notice">移除标注会保留日记，解除它们与此地点的关联。</p></form>');
  $('#marker-edit').onsubmit=e=>{e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name)return;if(mutate(()=>campaign().markers.find(m=>m.id===marker.id).name=name)){closeDialog();render();}};
- $('#move-marker').onclick=()=>{closeDialog();movingMarker=marker.id;placing=true;render();};
+ $('#move-marker').onclick=()=>{closeDialog();openMarker=null;movingMarker=marker.id;placing=true;render();};
  $('#remove-marker').onclick=()=>{if(mutate(()=>{const c=campaign();c.markers=c.markers.filter(m=>m.id!==marker.id);c.entries.filter(e=>e.markerId===marker.id).forEach(e=>e.markerId=null);},true)){closeDialog();selectedMarker=null;render();toast('标注已移除，日记保留',true);}};
 }
 $('#map-upload').onchange=async e=>{
@@ -204,7 +243,7 @@ $('#settings-button').onclick=()=>{
  $('#settings-export').onclick=()=>$('#export-button').click();
  $('#restore-button').onclick=()=>$('#backup-upload').click();
 };
-$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记 · 本机交互样稿。日记、角色和物品保存在当前浏览器；上传地图保存在此设备。尚未接入多人同步与 Owlbear 房间，请定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝及行囊与木箱是为本项目生成的原创插画，不属于历史馆藏或游戏原素材。</li></ul>');
+$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记 · 本机交互样稿。日记、角色和物品保存在当前浏览器；上传地图保存在此设备。尚未接入多人同步与 Owlbear 房间，请定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html" target="_blank" rel="noopener">沃尔特斯 W.183《时祷书》，126v</a><br>约 1460–1470，布鲁日；原抄本末尾的空白犊皮纸页。用于书页及卷轴底材，原图不改动，显示时裁去拍摄背景并调暖色调。<a href="https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html" target="_blank" rel="noopener">数字图像开放许可：CC0</a>。</li><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝及行囊与木箱是为本项目生成的原创插画，不属于历史馆藏或游戏原素材。</li></ul>');
 function download(name,content,type){const url=URL.createObjectURL(content instanceof Blob?content:new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 function markdown(){const c=exportSnapshot().campaigns.find(c=>c.id===campaign().id);return'# '+c.name+'\n\n'+sortEntries(c.entries,sort).map(e=>'## '+(e.adventureLabel||'日期未注明')+' · '+characterName(e.characterId)+'\n\n'+(campaign().markers.find(m=>m.id===e.markerId)?.name?'地点：'+campaign().markers.find(m=>m.id===e.markerId).name+'\n\n':'')+e.body+'\n\n---\n写入：'+e.createdAt+' · 序号 '+e.sequence+'\n').join('\n')+'\n## 物品清单\n\n'+c.items.map(i=>'- '+i.name+' × '+i.quantity+'（'+(i.ownerId===null?'公库':characterName(i.ownerId))+'）'+(i.description?'：'+i.description:'')).join('\n');}
 async function exportBackup(){

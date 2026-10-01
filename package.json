@@ -6,7 +6,7 @@
   "description": "Device-local medieval campaign journal prototype",
   "scripts": {
     "test": "node --test",
-    "check": "node --check dist/app.js && node --check dist/domain.js && node --check dist/map-camera.js && node --check dist/map-view.js",
+    "check": "node --check dist/app.js && node --check dist/domain.js && node --check dist/map-camera.js && node --check dist/map-view.js && node --check dist/scroll-position.js",
     "serve": "python -m http.server 4173 --bind 127.0.0.1 --directory dist"
   },
   "license": "MIT"

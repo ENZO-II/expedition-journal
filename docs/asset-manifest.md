@@ -56,3 +56,16 @@ Exact prompts: [illumination-v3-prompts.md](illumination-v3-prompts.md). Measure
 Both are original supporting illustrations generated using built-in ImageGen, one request each, no variants or retries; copied unchanged. They share the generated-asset reuse terms stated above and are not museum objects. [Exact prompts](illumination-v4-prompts.md) and [measured QA](illumination-v4-asset-qa.md).
 
 Additional visual research: [Getty, Decorated Text Page, Ms. Ludwig IX 19, fol. 312](https://www.getty.edu/art/collection/object/107SG2), about 1525–1530. The reference image was viewed, not downloaded or included in the application.
+
+
+## Real parchment leaf · 2026-10-01
+
+- File: `dist/assets/walters-w183-126v.jpg`, 613,501 bytes. The downloaded JPEG is unchanged.
+- Object: Book of Hours (Use of Rome), Walters Art Museum, **W.183, fol. 126v**. Bruges, ca. 1460–1470, circle of Willem Vrelant.
+- Support: light-weight calf parchment with a satiny finish. The catalog explicitly identifies fols. 126–131 as blank leaves at the end of the medieval codex; this is not a modern replacement flyleaf.
+- Catalog: https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html
+- Image: https://www.thedigitalwalters.org/Data/WaltersManuscripts/W183/data/W.183/sap/W183_000258_sap.jpg
+- Current license: **CC0**, https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html
+- Acquired and license checked: 2026-10-01. Credit: The Walters Art Museum, Baltimore.
+- Display adaptation only: CSS crops the surrounding photographic support, scales the leaf to the page or scroll, and applies a warm translucent color plus luminosity blending. The original photograph's fibers and faint ruling remain visible. This is a designed reading surface, not a color-faithful facsimile. The scroll rollers and unfolding motion are interface graphics, not part of the historical photograph.
+- Used on left journal leaves, both inventory leaves, and in-map scrolls. The map itself occupies the entire right leaf without a decorative UI frame; the chart's own historical outline remains part of its source image.
