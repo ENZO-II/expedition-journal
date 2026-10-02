@@ -124,3 +124,8 @@ These are responsive interface drawings inspired by the user-provided manuscript
 The circular corner structure and red/blue/gold palette were studied in the British Library's [Yates Thompson MS 10, Apocalypse, c. 1370–1390](https://searcharchives.bl.uk/catalog/040-002354398), specifically fol. 5v, whose lower miniature contains the four beasts in corner roundels. [Digital facsimile](https://iiif.bl.uk/uv/#?manifest=https://bl.digirati.io/iiif/ark:/81055/vdc_100165174828.0x000001). The interface's square housing and simplified curling leaf are an original adaptation for a small junction, not a copy of the manuscript's beasts or a historical seal. Both SVGs are code-native project artwork under MIT; the reference scan is not redistributed.
 
 The masthead ornaments are unchanged. The map leaf remains unframed.
+
+
+## v12 新增
+
+`dist/assets/dip-pen.svg`：项目原创的代码绘制 SVG，木笔杆、金属笔尖与蘸水墨瓶，用作地图绘图入口和光标；采用项目 MIT 许可。无新增第三方图片，用户上传内容不属于源码素材，也不进入仓库。

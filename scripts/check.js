@@ -1,0 +1,1 @@
+import{readdirSync}from'node:fs';import{spawnSync}from'node:child_process';for(const file of ['server.js',...readdirSync('dist').filter(f=>f.endsWith('.js')).map(f=>'dist/'+f)]){const r=spawnSync(process.execPath,['--check',file],{stdio:'inherit'});if(r.status)process.exit(r.status);}console.log('JavaScript syntax checks passed');

@@ -1,0 +1,45 @@
+/* A pen, pigments and small attached pictures belong to the page rather than floating cards. */
+.map-ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.map-art-image{position:absolute;transform:translate(-50%,-50%);aspect-ratio:1;padding:0;background:none;border:2px solid #cba95b;outline:1px solid #342d21;overflow:visible;z-index:2;min-height:0;box-shadow:1px 2px 3px #30251b44}
+.map-art-image>img{width:100%;height:100%;object-fit:cover;display:block}.map-art-image.circle,.map-art-image.circle>img{border-radius:50%}
+.art-signature{position:absolute;right:-8px;bottom:-8px}.art-signature .avatar{width:25px;height:25px;border:1px solid #ebd298;outline:1px solid #392e23}
+.map-stage{cursor:crosshair}.map-stage.dragging{cursor:grabbing}.map-stage.pen-mode{cursor:url('assets/dip-pen.svg') 6 58,crosshair}
+.atlas-bottom-controls{gap:14px;align-items:end}
+.map-pen-action{display:flex;flex-direction:column;align-items:center;gap:0;padding:0;width:58px;min-height:65px;color:#70492d;background:none;border:0;font-family:inherit;font-size:12px}
+.map-pen-action img{width:47px;height:47px}.map-pen-action[aria-pressed=true]{filter:drop-shadow(0 0 2px #a3392d);color:#8f2e26}
+.pen-palette{position:absolute;left:20px;bottom:91px;z-index:9;width:min(290px,calc(100% - 42px));background:#ead9b1 url('assets/vellum-v9.png') center/cover;border:1px solid #433323;box-shadow:inset 0 0 0 2px #c4a456,0 2px 6px #39241644;padding:10px 13px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.pen-palette[hidden]{display:none}.ink-colors{border:0;margin:0;padding:0;display:flex;gap:8px}.ink-colors legend{font-size:12px;margin-bottom:5px;color:#674b31}.ink-colors button{border:1px solid #55402a;background:#d8c695;padding:3px;width:27px;min-height:27px}.ink-colors button[aria-pressed=true]{outline:2px solid #ac7e35;outline-offset:2px}.ink-colors span{display:block;width:18px;height:18px;border-radius:48%;background:var(--ink);box-shadow:inset 1px 1px #ffffff22}
+.ink-width{font-size:12px;color:#674b31}.ink-width select{display:block;background:#f2e5c8;border:1px solid #aa8850;padding:3px;margin-top:5px;min-height:27px}.pen-actions{display:flex;gap:12px;flex-wrap:wrap;font-size:11px}.pen-actions button{padding:3px 0;min-height:29px}.map-placement-note{position:absolute;z-index:8;bottom:91px;left:20px;right:64px;background:#eddfbf;padding:8px 12px;border-block:1px solid #a68343;font-size:12px}
+.crop-shapes{display:flex;gap:24px;border:0;border-bottom:1px solid #b09457;margin:0 0 15px;padding:0 0 10px}.crop-shapes legend{font-size:13px;color:#77573a;margin-bottom:7px}.crop-shapes label{display:flex;align-items:center;gap:7px}.crop-shapes input{accent-color:#89362b;min-height:0}.crop-mask.square{border-radius:0}
+.item-pictures,.item-picture-editor{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}.item-pictures:empty{display:none}.picture-thumb{width:75px;height:75px;min-height:0;padding:0;background:none;border:2px solid #bc9853;outline:1px solid #49372a;overflow:hidden;flex-shrink:0}.picture-thumb img{display:block;width:100%;height:100%;object-fit:cover}.picture-thumb.circle{border-radius:50%}.picture-slot{width:96px;display:flex;flex-direction:column;align-items:center;gap:5px}.picture-slot img{width:88px;height:88px;object-fit:cover;border:1px solid #b38e46}.picture-slot img.circle,.picture-view img.circle{border-radius:50%}.picture-slot button{font-size:11px}.picture-view{margin:15px auto;text-align:center}.picture-view img{max-width:100%;max-height:50dvh;object-fit:contain;border:2px solid #c8a45d;outline:1px solid #463324}.picture-view figcaption{text-align:left;white-space:pre-wrap;margin-top:15px;line-height:1.8}.picture-byline{display:flex;align-items:center;gap:9px;color:#6e4a32;margin-bottom:16px}.picture-byline .avatar{width:32px;height:32px}.room-settings{border-top:1px solid #bca16e;padding-top:12px}.room-settings button{color:#713b2e}
+#join-room-form{border-top:1px solid #b09457;margin-top:25px;padding-top:18px}.item-actions{gap:14px;flex-wrap:wrap}
+/* Ordinary actions are manuscript rubrics. Colored ground is reserved for the page's painted rails. */
+dialog .button{border-radius:0;background:#efdfb9;border:1px solid #9f7b3f;box-shadow:inset 0 0 0 2px #f7edcc;padding:8px 17px;color:#61402c}
+dialog .button.primary{background:#843c30;color:#f8e8be;border-color:#533325;box-shadow:inset 0 0 0 2px #b18d4c}
+dialog .field input:not([type=range]),dialog .field textarea,dialog .field select{border:0;border-bottom:1px solid #a5895a;border-radius:0;background:#f9efd87a;box-shadow:none}
+.leaf-actions .button.primary{border-radius:0;background:#ecdcb2;color:#73422d;border:1px solid #c2a465;outline:1px solid #3d3023;outline-offset:2px;box-shadow:none}
+.empty-state{background:none;border:0;box-shadow:none}.empty-state .ornament{font-size:22px;color:#9e7038}.empty-state h2{font-weight:400;font-size:21px}
+@media(max-width:850px){.atlas-bottom-controls{gap:9px}.map-pen-action{width:48px;font-size:10px}.map-pen-action img{width:39px;height:39px}.pen-palette{left:12px;bottom:84px}.picture-thumb{width:60px;height:60px}.item-actions{gap:9px}.header-actions{gap:7px}}
+@media(max-width:640px){.masthead{height:auto;flex-wrap:wrap;gap:8px}.header-actions{margin-left:auto}.pen-palette{max-width:calc(100% - 28px)}.crop-shapes{gap:16px}}
+@media print{.pen-palette,.map-pen-action,.map-placement-note,.item-actions{display:none}.item-pictures{break-inside:avoid}}
+
+/* Small sheets have rubric initials and a ruled heading, with clear writing space below. */
+dialog{border:1px solid #4a3523;box-shadow:0 12px 35px #23170e66,inset 0 0 0 3px #c2a15a,inset 0 0 0 4px #58452c}
+dialog::backdrop{background:#31231588;backdrop-filter:none}
+.dialog-frame{border:0;margin:9px;padding:19px 22px 23px}
+.dialog-heading{position:relative;border-bottom:1px solid #302c21;padding-bottom:15px;margin-bottom:21px}
+.dialog-heading::after{content:"";position:absolute;left:0;right:0;bottom:1px;height:5px;background:#294f78 url('assets/manuscript-diaper.svg') center/34px 24px;border-block:1px solid #c29e49;pointer-events:none}
+.dialog-heading h2{display:flex;align-items:center;gap:4px;font-size:22px;font-weight:400;letter-spacing:1px;color:#73382b}
+.dialog-initial{display:inline-grid;place-items:center;min-width:30px;height:34px;margin-right:2px;background:#8c332b url('assets/manuscript-diaper.svg') center/40px 30px;color:#e7c471;border:1px solid #c9a453;outline:1px solid #433222;outline-offset:1px;font-size:27px;line-height:1}
+dialog .button.primary{background:#f0dfb6;color:#893a2d;border-color:#705039;box-shadow:inset 0 0 0 2px #ead39b;font-weight:600}
+dialog .button.danger{background:none;color:#8e352c;border:0;box-shadow:none}
+.dialog-actions{flex-wrap:wrap;align-items:center}
+.ink-colors button{border-radius:46% 49% 43% 47%;background:#5e4933;box-shadow:inset 1px 1px #b99a58;width:29px;min-height:29px;padding:4px;display:grid;place-items:center}
+.ink-colors span{width:19px;height:19px;border-radius:44% 48% 45% 48%;border:1px solid #332820}
+.ink-colors button[aria-pressed=true]{outline:1px solid #c5a25d;outline-offset:3px}
+.empty-state{min-height:200px;gap:10px;padding:40px 20px}
+.empty-state h2{color:#793f2d}
+.export-options .button{justify-content:flex-start;text-align:left;border-inline:0;background:none;box-shadow:none;border-block:0;border-bottom:1px solid #ac8950;padding:13px 2px}
+.export-options .button.primary{color:#8a382d;background:none;box-shadow:none}
+@media(max-width:850px){.header-actions .text-button{display:inline-flex;font-size:12px;padding:4px 5px}.dialog-heading h2{font-size:20px}.pen-actions button{min-height:36px}}
+@media(max-width:480px){.header-actions{max-width:none;flex-wrap:wrap;justify-content:flex-end}.masthead{row-gap:12px}.dialog-frame{padding:16px}.dialog-actions .button{flex-grow:1}}

@@ -1,13 +1,16 @@
 {
   "name": "expedition-journal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Device-local medieval campaign journal prototype",
+  "description": "Illuminated campaign journal with shared rooms",
   "scripts": {
     "test": "node --test",
-    "check": "node --check dist/app.js && node --check dist/domain.js && node --check dist/map-camera.js && node --check dist/map-view.js && node --check dist/scroll-position.js && node --check dist/discussion.js && node --check dist/crop-geometry.js && node --check dist/avatar-crop.js",
-    "serve": "python -m http.server 4173 --bind 127.0.0.1 --directory dist"
+    "check": "node scripts/check.js",
+    "serve": "node server.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  }
 }

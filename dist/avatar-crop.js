@@ -1,13 +1,15 @@
-import{cropFrame}from'./crop-geometry.js?v=20261002-9';
+import{cropFrame}from'./crop-geometry.js?v=20261003-12f';
 
-// All image processing stays in the browser. Nothing is uploaded to a server.
-export async function mountAvatarCrop(host,file,{onSave,onCancel,onError}){
+// Cropping happens in the browser; the caller chooses local or shared storage.
+export async function mountAvatarCrop(host,file,{onSave,onCancel,onError,shapes=["circle"],initialShape="circle",outputSize=256,label="头像"}){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>12*1024*1024)throw new Error('请选择 12 MB 以内的 PNG、JPG 或 WebP 图片');
  const url=URL.createObjectURL(file),image=new Image();
- try{image.src=url;await image.decode();if(image.naturalWidth*image.naturalHeight>40000000)throw new Error('图片过大，请使用 4000 万像素以内的图片');}catch(e){URL.revokeObjectURL(url);throw new Error(e.message==='图片过大，请使用 4000 万像素以内的图片'?e.message:'无法读取这张头像图片');}
+ try{image.src=url;await image.decode();if(image.naturalWidth*image.naturalHeight>40000000)throw new Error('图片过大，请使用 4000 万像素以内的图片');}catch(e){URL.revokeObjectURL(url);throw new Error(e.message==='图片过大，请使用 4000 万像素以内的图片'?e.message:'无法读取这张图片');}
  if(!host.isConnected){URL.revokeObjectURL(url);return()=>{};}
- host.innerHTML='<p class="crop-help" id="crop-help">拖动图片调整位置，滑动下方滑杆缩放。圆框内的部分会成为头像。</p><div class="crop-stage" role="img" aria-label="圆形头像裁剪预览" aria-describedby="crop-help" tabindex="0"><canvas width="560" height="560"></canvas><span class="crop-mask" aria-hidden="true"></span></div><label class="crop-zoom">缩放<input type="range" min="1" max="4" step="0.01" value="1" aria-label="头像缩放"></label><p class="crop-keyboard">也可用方向键移动，＋ / − 缩放。</p><div class="dialog-actions"><button class="button" id="crop-reset">重置位置</button><button class="text-button" id="crop-cancel">取消</button><button class="button primary" id="crop-save">使用这个头像</button></div>';
- const stage=host.querySelector('.crop-stage'),canvas=host.querySelector('canvas'),ctx=canvas.getContext('2d'),slider=host.querySelector('input');
+ let shape=shapes.includes(initialShape)?initialShape:shapes[0];
+ host.innerHTML=(shapes.length>1?'<fieldset class="crop-shapes"><legend>裁剪形状</legend><label><input type="radio" name="crop-shape" value="circle" '+(shape==='circle'?'checked':'')+'>圆形</label><label><input type="radio" name="crop-shape" value="square" '+(shape==='square'?'checked':'')+'>方形</label></fieldset>':'')+'<p class="crop-help" id="crop-help">拖动图片调整位置，滑动下方滑杆缩放。框内的部分会成为图片。</p><div class="crop-stage" role="img" aria-label="图片裁剪预览" aria-describedby="crop-help" tabindex="0"><canvas width="560" height="560"></canvas><span class="crop-mask" aria-hidden="true"></span></div><label class="crop-zoom">缩放<input type="range" min="1" max="4" step="0.01" value="1" aria-label="图片缩放"></label><p class="crop-keyboard">也可用方向键移动，＋ / − 缩放。</p><div class="dialog-actions"><button class="button" id="crop-reset">重置位置</button><button class="text-button" id="crop-cancel">取消</button><button class="button primary" id="crop-save">使用这张图片</button></div>';
+ const stage=host.querySelector('.crop-stage'),canvas=host.querySelector('canvas'),ctx=canvas.getContext('2d'),slider=host.querySelector('input[type="range"]');
+ const mask=host.querySelector('.crop-mask');mask.classList.toggle('square',shape==='square');host.querySelectorAll('[name="crop-shape"]').forEach(input=>input.onchange=()=>{shape=input.value;mask.classList.toggle('square',shape==='square');});
  const size=280;let zoom=1,x=0,y=0,dead=false;const pointers=new Map();let pinch=null;
  const draw=()=>{const f=cropFrame(image.naturalWidth,image.naturalHeight,size,zoom,x,y);x=f.x;y=f.y;ctx.setTransform(2,0,0,2,0,0);ctx.clearRect(0,0,size,size);ctx.drawImage(image,f.left,f.top,f.width,f.height);slider.value=String(zoom);};
  const scale=value=>{const next=Math.max(1,Math.min(4,value)),ratio=next/zoom;x*=ratio;y*=ratio;zoom=next;draw();};
@@ -21,7 +23,7 @@ export async function mountAvatarCrop(host,file,{onSave,onCancel,onError}){
  slider.oninput=()=>scale(Number(slider.value));
  host.querySelector('#crop-reset').onclick=()=>{zoom=1;x=0;y=0;draw();};
  host.querySelector('#crop-cancel').onclick=onCancel;
- host.querySelector('#crop-save').onclick=()=>{if(dead)return;try{const out=document.createElement('canvas');out.width=out.height=256;const c=out.getContext('2d');c.beginPath();c.arc(128,128,128,0,Math.PI*2);c.clip();const f=cropFrame(image.naturalWidth,image.naturalHeight,size,zoom,x,y),ratio=256/size;c.drawImage(image,f.left*ratio,f.top*ratio,f.width*ratio,f.height*ratio);const data=out.toDataURL('image/webp',.88);if(data.length>150000)throw new Error('头像仍然过大，请选择较简单的图片');onSave(data);}catch(e){onError(e.message);}};
+ host.querySelector('#crop-save').onclick=()=>{if(dead)return;try{const out=document.createElement('canvas');out.width=out.height=outputSize;const c=out.getContext('2d');if(shape==='circle'){c.beginPath();c.arc(outputSize/2,outputSize/2,outputSize/2,0,Math.PI*2);c.clip();}const f=cropFrame(image.naturalWidth,image.naturalHeight,size,zoom,x,y),ratio=outputSize/size;c.drawImage(image,f.left*ratio,f.top*ratio,f.width*ratio,f.height*ratio);const data=out.toDataURL('image/webp',.88);if(data.length>(label==='头像'?150000:900000))throw new Error('裁剪后的图片仍然过大，请选择较简单的图片');onSave(data,shape);}catch(e){onError(e.message);}};
  draw();stage.focus({preventScroll:true});
  return()=>{dead=true;URL.revokeObjectURL(url);pointers.clear();};
 }
