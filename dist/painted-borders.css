@@ -5,7 +5,7 @@
 .page-painted-frame .rail-top{top:0}.page-painted-frame .rail-bottom{bottom:0;transform:scaleY(-1)}
 .page-painted-frame .rail-left,.page-painted-frame .rail-right{top:0;bottom:0;width:var(--rail);background:url('assets/vermilion-edge-v10.svg') center top/var(--rail) auto repeat-y}
 .page-painted-frame .rail-left{left:0}.page-painted-frame .rail-right{right:0;transform:scaleX(-1)}
-.page-painted-frame::after{content:"";position:absolute;inset:-1px;pointer-events:none;background:url('assets/rail-junction-v10.svg') left top/15px 15px no-repeat,url('assets/rail-junction-v10.svg') right top/15px 15px no-repeat,url('assets/rail-junction-v10.svg') left bottom/15px 15px no-repeat,url('assets/rail-junction-v10.svg') right bottom/15px 15px no-repeat}
+.page-painted-frame::after{content:"";position:absolute;inset:-1px;pointer-events:none;background:url('assets/rail-cap-v11.svg') left top/15px 15px no-repeat,url('assets/rail-cap-v11.svg') right top/15px 15px no-repeat,url('assets/square-roundel-v11.svg') left bottom/18px 18px no-repeat,url('assets/square-roundel-v11.svg') right bottom/18px 18px no-repeat}
 .book-page:has(>.page-painted-frame)::before{display:none}
 /* The blue title and filters have their own complete gilt enclosure. */
 .reading-frontispiece{border:0;box-shadow:none;background:none}
@@ -16,5 +16,5 @@
 .reading-frontispiece .reading-toolbar .text-button{color:#f2d28a;text-shadow:0 1px #243e2b;background-image:none;text-decoration:underline;text-decoration-color:#c2a56c;text-underline-offset:3px}
 .reading-frontispiece .reading-toolbar .text-button:hover{color:#fff2ca;background-color:transparent}
 .inventory-book .leaf-heading,.journal-book>.page-right>.leaf-heading{position:relative;border:0;box-shadow:none}
-@media(max-width:850px){.page-painted-frame{--rail:11px;inset:2px}.page-painted-frame::after{background-size:13px 13px}.rubric-panel{padding:4px}.reading-frontispiece .reading-toolbar{min-height:59px}.reading-frontispiece .reading-toolbar>span{font-size:11px}}
+@media(max-width:850px){.page-painted-frame{--rail:11px;inset:2px}.page-painted-frame::after{background-size:13px 13px,13px 13px,16px 16px,16px 16px}.rubric-panel{padding:4px}.reading-frontispiece .reading-toolbar{min-height:59px}.reading-frontispiece .reading-toolbar>span{font-size:11px}}
 @media print{.page-painted-frame,.rubric-panel::after,.inventory-book .leaf-heading::after,.journal-book>.page-right>.leaf-heading::after{display:none}.rubric-panel,.reading-frontispiece .reading-toolbar{background:white;box-shadow:none;border:0}.reading-frontispiece .reading-toolbar>span,.reading-frontispiece .reading-toolbar .text-button{color:black;text-shadow:none}}

@@ -114,3 +114,13 @@ Five code-native SVG ornaments, created for this project under MIT:
 - `rail-junction-v10.svg`: a small square gold/blue floral corner joining the page rails.
 
 These are responsive interface drawings inspired by the user-provided manuscript references, not crops of those images or historical artifacts. Tiles repeat at their intrinsic aspect ratio; they are not stretched across an entire page. No new raster generation or third-party download was used. The existing page illuminations remain whole.
+
+
+## Plain upper corners and circular lower medallions · v11 · 2026-10-03
+
+- `rail-cap-v11.svg`: retains the v10 gold square and blue field, removing only the flower and its centre. Used at the two upper corners of each framed leaf.
+- `square-roundel-v11.svg`: a square gold/ink frame enclosing a continuous red and gold circular medallion on blue, with a small curling leaf and slightly uneven drawn contours. Used only at the two lower corners.
+
+The circular corner structure and red/blue/gold palette were studied in the British Library's [Yates Thompson MS 10, Apocalypse, c. 1370–1390](https://searcharchives.bl.uk/catalog/040-002354398), specifically fol. 5v, whose lower miniature contains the four beasts in corner roundels. [Digital facsimile](https://iiif.bl.uk/uv/#?manifest=https://bl.digirati.io/iiif/ark:/81055/vdc_100165174828.0x000001). The interface's square housing and simplified curling leaf are an original adaptation for a small junction, not a copy of the manuscript's beasts or a historical seal. Both SVGs are code-native project artwork under MIT; the reference scan is not redistributed.
+
+The masthead ornaments are unchanged. The map leaf remains unframed.
