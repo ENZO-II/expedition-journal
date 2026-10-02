@@ -1,0 +1,32 @@
+[
+  {
+    "file": "dist/assets/painted-desk-v9.png",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "bytes": 2807356,
+    "sha256": "16e88bcf98bd7dcacc071f4ac2f4922a209b3906cf2a1bbb64f6e3a6aa173bd2",
+    "alpha_extrema": null
+  },
+  {
+    "file": "dist/assets/vellum-v9.png",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGB",
+    "bytes": 2966746,
+    "sha256": "051fcb4b9273def396e624abdda1b4702bcb78ef900e8e60208087ae0bd2bc1a",
+    "alpha_extrema": null
+  },
+  {
+    "file": "dist/assets/wax-seal-v9.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "bytes": 2354447,
+    "sha256": "72a8aa8492c65a0fc7614751ccb4b8db65f519231ef5a92af9736656aff388f3",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  }
+]

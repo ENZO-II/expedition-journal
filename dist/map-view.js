@@ -67,7 +67,7 @@ export function mountMap({stage,canvas,key,onPlace,onMarker,onBackground,onCamer
  cleanup.reveal=point=>{
   if(!ready)return;
   const v=viewport(),f=frame(camera,v,dimensions),x=f.x+point.x*f.width,y=f.y+point.y*f.height;
-  const panel=Math.min(252,v.width-54),space=panel+36;
+  const panel=Math.min(270,v.width-54),space=panel+36;
   let targetX=x,targetY=y;
   if(x<24||x>v.width-24||Math.max(x,v.width-x)<space)targetX=x<v.width/2?Math.max(30,v.width-space):Math.min(v.width-30,space);
   if(y<80||y>v.height-60)targetY=v.height/2;

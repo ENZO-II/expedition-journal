@@ -1,0 +1,77 @@
+/* Quiet painted wood, clean vellum and a small vocabulary of manuscript actions. */
+body{background-image:linear-gradient(#2e211624,#2e211624),url('assets/painted-desk-v9.png')}
+.book-page{background-color:#efe1c2;background-image:linear-gradient(90deg,#c6aa7020,transparent 20%,#fff7e52a 68%,#b3946026),url('assets/vellum-v9.png');background-size:100% 100%,100% 100%;background-position:center;background-blend-mode:normal,normal}
+.page-right{background-position:center,right center}
+.scroll-skin{background-color:#efe0bf;background-image:linear-gradient(90deg,#be9b6230,transparent 12%,#fff8e629 70%,#b89b6826),url('assets/vellum-v9.png');background-size:100% 100%,100% 100%;background-position:center;background-blend-mode:normal}
+.masthead,.status-bar{background-image:linear-gradient(#f4e9d0aa,#eedcbaaa),url('assets/vellum-v9.png');background-size:auto,100% 100%}
+.button{border:0;border-block:1px solid #ae8b41;border-radius:0;background:#e8d5b1;box-shadow:inset 0 3px #f4e5c9,inset 0 -3px #f4e5c9;min-height:44px}
+.button.primary{background:#842f2d;color:#f8e5b7;border-block:1px solid #c4a256;box-shadow:inset 0 3px #842f2d,inset 0 4px #b39350,inset 0 -3px #842f2d,inset 0 -4px #b39350}
+.text-button{text-decoration:none;background-image:url('assets/ink-flourish-v9.svg');background-position:center bottom 4px;background-size:34px 4px;background-repeat:no-repeat}
+.text-button:hover{color:#942d24;background-color:#b88d3220}
+.folio-bottom{align-items:center}
+.folio-bottom>div:last-child{gap:9px}
+.folio-bottom #edit-entry{border:0;box-shadow:none;background:none;padding:0 2px;font-size:12px;gap:3px;min-height:48px}
+#edit-entry::before{content:'✎';display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;background:url('assets/wax-seal-v9.png') center/contain no-repeat;font:27px Georgia,serif;color:#f2d995;text-shadow:0 1px #623026}
+#delete-entry{color:#745b48;font-size:12px;background:none}
+#delete-entry::before{content:'×';font:21px Georgia;margin-right:4px;color:#8d392e}
+#delete-entry:hover{text-decoration:line-through;background:none}
+.folio-bottom .icon-button{background:none;border:0;font-size:28px;color:#813627}
+.atlas-bottom-controls{gap:10px;align-items:flex-end}
+.atlas-bottom-controls #place-marker{width:66px;height:66px;padding:10px;min-height:66px;white-space:normal;line-height:1.3;border:0;background:transparent url('assets/wax-seal-v9.png') center/contain no-repeat;box-shadow:none;color:#ffe9c0;text-shadow:0 1px #5c211d;font-size:12px}
+.atlas-bottom-controls #place-marker.active{filter:brightness(1.25);outline:2px solid #e5c871;outline-offset:2px}
+.atlas-bottom-controls #reset-map{position:relative;border:0;box-shadow:none;background:transparent url('assets/compass-action-v9.svg') center top/49px 49px no-repeat;min-height:70px;min-width:52px;padding:48px 2px 0;font-size:12px;color:#513b27;text-shadow:0 1px #fff0ce}
+.atlas-zoom{background:#f0e0bb;border:1px solid #ab8950;border-radius:45% 45% 45% 45% / 15% 15% 15% 15%;box-shadow:inset 0 0 0 2px #f8ebca,0 2px 5px #3d2a1333;padding:3px}
+.atlas-zoom .icon-button{border:0;background:none;color:#743a2b;font-size:25px}
+.avatar,.masthead .avatar,.author-line .avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:1px solid #b99550;outline:1px solid #f1dfb2;outline-offset:1px;display:inline-grid;place-items:center;flex-shrink:0;font-size:16px;line-height:1}
+.avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.author-line{align-items:center}
+.character-row{display:flex;align-items:center;gap:9px;border-bottom:1px solid #b9986655;flex-wrap:wrap}
+.character-row .character-option{flex:1;min-width:180px;margin:0;border:0;padding:10px 3px;background:none}
+.character-row .character-option.selected{box-shadow:inset 3px 0 #8a3529;padding-left:10px;background:#bc9b4220}
+.character-row .avatar{width:46px;height:46px}
+.avatar-edit,.avatar-remove{font-size:12px;padding:5px;min-height:44px}
+.avatar-remove{color:#765d48}
+.crop-help,.crop-keyboard{font-size:13px;line-height:1.9;color:#694e32}
+.crop-stage{position:relative;width:min(280px,100%);aspect-ratio:1;margin:14px auto;overflow:hidden;cursor:grab;touch-action:none;background:#5e5143;outline:1px solid #bc9954;outline-offset:4px}
+.crop-stage:active{cursor:grabbing}.crop-stage:focus-visible{outline:3px solid #2b6484}
+.crop-stage canvas{display:block;width:100%;height:100%;pointer-events:none}
+.crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 100px #211609b8,inset 0 0 0 2px #f4e4be;pointer-events:none}
+.crop-zoom{display:flex;align-items:center;gap:16px;max-width:340px;margin:14px auto;font-size:13px}
+.crop-zoom input{flex:1;min-width:0;accent-color:#8a3329;touch-action:auto}
+.crop-keyboard{text-align:center;font-size:11px}
+.reply-form-meta{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.discussion{margin-top:23px;padding-top:15px;border-top:3px double #b59356;white-space:normal}
+.discussion-heading{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:7px}
+.discussion-heading h3{font-size:17px;color:#78382d;margin:0;line-height:1.6}.discussion-heading h3 small{font:12px Georgia;color:#8c7042;margin-left:4px}
+.discussion-heading>.text-button{font-size:12px;padding:6px 2px;min-height:40px;white-space:nowrap}
+.reply-card{position:relative;margin:14px 0;padding:0 0 13px;border-bottom:1px solid #bda27366}
+.reply-byline{display:flex;align-items:center;gap:9px;line-height:1.6}.reply-byline strong{font-weight:600;font-size:14px;color:#564130}.reply-byline small{display:block;font-size:11px;color:#80623f}
+.reply-body{font-size:15px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:9px;color:#47382a}
+.reply-to{font-size:12px;color:#825138;margin:8px 0 0;border-left:2px solid #b5965c;padding-left:8px}
+.reply-action{display:block;margin-left:auto;font-size:11px;padding:4px 0;min-height:32px}
+.scroll-excerpt{white-space:normal}.scroll-entry-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.scroll-heading{margin-bottom:7px;padding-bottom:6px}
+.scroll-author{display:flex;align-items:center;gap:7px;font-size:12px;margin-bottom:10px;line-height:1.6}.scroll-author .avatar{width:29px;height:29px}.scroll-author small{display:block;font-size:10px;color:#785d40}
+.place-contributors{display:flex;gap:6px 10px;flex-wrap:wrap;max-height:61px;overflow:auto;flex-shrink:0;margin-bottom:5px;padding:2px}
+.contributor{display:inline-flex;gap:5px;align-items:center;font-size:11px;color:#5b4632;max-width:100%;overflow-wrap:anywhere}.contributor .avatar{width:23px;height:23px;font-size:12px}
+.scroll-tabs{display:flex;gap:12px;flex-shrink:0;border-bottom:1px solid #ad8e57;margin-bottom:10px}
+.scroll-tabs button{font-size:11px;min-height:35px;padding:3px 1px;color:#786040}.scroll-tabs button[aria-pressed=true]{color:#852f27;border-bottom:2px solid #923d2d}
+.discussion.compact{margin-top:15px;padding-top:10px}.compact .discussion-heading h3{font-size:13px}.compact .discussion-heading>.text-button{font-size:10px;min-height:32px}.compact .reply-body{font-size:13px}.compact .reply-byline .avatar{width:26px;height:26px}.compact .reply-byline strong{font-size:12px}.compact .reply-byline small{font-size:10px}
+/* Pins carry people as well as a coordinate. Reset the old rotated teardrop spans. */
+.atlas-book .map-pin{width:130px;height:69px;transform:translate(-50%,-70%);display:flex;flex-direction:column;gap:2px;overflow:visible;filter:drop-shadow(0 2px 2px #2e211950)}
+.atlas-book .map-pin span{transform:none;border:0;border-radius:0;width:auto;height:auto;background:none;outline:0;display:inline}
+.atlas-book .map-pin .pin-faces{display:flex;align-items:center;justify-content:center;padding:2px}
+.atlas-book .map-pin .avatar{display:inline-grid;width:32px;height:32px;border-radius:50%;border:2px solid #efd9a3;outline:1px solid #906b32;background:var(--avatar-color);color:#ffebbe;font-size:14px;margin-left:-6px}
+.atlas-book .map-pin .avatar:first-child{margin-left:0}
+.atlas-book .map-pin .pin-caption{display:block;max-width:130px;padding:4px 8px;background:#f4e7c9eb;border:1px solid #ac8a49;border-radius:1px;color:#5c3827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;line-height:1.3}
+.atlas-book .map-pin .pin-number{position:absolute;left:calc(50% + 10px);top:-1px;width:16px;height:16px;display:grid;place-items:center;background:#83362d;color:#f4ddb1;border:1px solid #dbb968;border-radius:50%;font:10px Georgia}
+.atlas-book .map-pin.selected .pin-caption,.atlas-book .map-pin[aria-expanded=true] .pin-caption{border-color:#82362b;box-shadow:0 0 0 1px #e7c781;color:#802f25}
+.atlas-book .map-pin[aria-expanded=true] .avatar{outline:2px solid #b38634}
+@media(max-width:850px){.folio-bottom>div:last-child{gap:5px}.folio-bottom #edit-entry{font-size:11px}#edit-entry::before{width:35px;height:35px;font-size:23px}.folio-bottom .text-button{font-size:11px}.atlas-bottom-controls #place-marker{width:58px;height:58px;min-height:58px;font-size:11px}.atlas-bottom-controls #reset-map{min-height:62px;background-size:43px 43px;padding-top:43px}.discussion-heading h3{font-size:15px}.reply-body{font-size:14px}}
+@media(max-width:640px){.character-row .character-option{min-width:140px}.reply-form-meta{gap:10px}.folio-bottom #edit-entry{font-size:12px}.reply-body{font-size:15px}.crop-stage{width:min(250px,100%)}}
+@media print{body{background:white}.map-pin,.reply-action,.discussion-heading button{display:none}.book-page{background:white}.reply-card{break-inside:avoid}}
+
+dialog{background-color:#eddfbf;background-image:linear-gradient(#f7ebd34a,#eeddbb33),url('assets/vellum-v9.png');background-size:100% 100%}
+.quick-reply{color:#79392e;white-space:nowrap;padding-inline:3px}.quick-reply small{font:11px Georgia;color:#806545}
+.reply-card:focus{outline:0}.reply-card:focus-visible{outline:2px solid #b1904a;outline-offset:5px}
+@media(min-width:641px) and (max-width:850px){.folio-bottom>div:last-child{gap:2px}.folio-bottom #edit-entry{font-size:10px;gap:0}#edit-entry::before{width:29px;height:29px}.folio-bottom #delete-entry{font-size:10px;padding-inline:3px}.folio-bottom .quick-reply{font-size:10px}.folio-bottom .entry-nav{gap:1px}.folio-bottom .entry-nav .icon-button{width:26px;min-width:26px}}

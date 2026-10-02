@@ -1,3 +1,4 @@
+import{validAvatar,validateReplies}from'./discussion.js?v=20261002-9';
 export const VERSION=1;
 export const uid=(prefix='id')=>prefix+'_'+crypto.randomUUID();
 export const escapeHtml=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -26,10 +27,10 @@ export function validateData(value){
  if(c.characters.length>500||c.entries.length>10000||c.maps.length>200||c.markers.length>20000||c.items.length>20000||c.history.length>1000)throw new Error('备份过大');
  if(!c.currentDate||!text(c.currentDate.label,100)||!Number.isSafeInteger(c.currentDate.order))throw new Error('冒险日期无效');
  const chars=new Set(c.characters.map(x=>x.id)),maps=new Set(c.maps.map(x=>x.id)),markers=new Set(c.markers.map(x=>x.id));
- for(const x of c.characters){checkId(x.id);if(!text(x.name,60)||!text(x.color,30)||!/^#[0-9a-f]{6}$/i.test(x.color))throw new Error('角色数据无效');}
+ for(const x of c.characters){checkId(x.id);if(!text(x.name,60)||!text(x.color,30)||!/^#[0-9a-f]{6}$/i.test(x.color))throw new Error('角色数据无效');if(!validAvatar(x.avatar))throw new Error('头像数据无效');}
  for(const x of c.maps){checkId(x.id);if(!text(x.name,100)||!text(x.asset,300)||!(x.asset==='assets/portolan.jpg'||x.asset.startsWith('blob:map_')))throw new Error('地图数据无效');}
- for(const x of c.markers){checkId(x.id);if(!maps.has(x.mapId)||!text(x.name,100)||!Number.isFinite(x.x)||!Number.isFinite(x.y)||x.x<0||x.x>1||x.y<0||x.y>1)throw new Error('地图标注无效');}
- for(const x of c.entries){checkId(x.id);if(sequences.has(x.sequence)||x.sequence<1||!text(x.authorMemberId,120))throw new Error('日记序号或作者无效');sequences.add(x.sequence);highestSequence=Math.max(highestSequence,x.sequence);if(!chars.has(x.characterId)||(x.markerId&&!markers.has(x.markerId))||!text(x.body,100000)||!text(x.adventureLabel,100)||!(x.adventureOrder===null||Number.isSafeInteger(x.adventureOrder))||!Number.isSafeInteger(x.sequence)||!Number.isFinite(Date.parse(x.createdAt))||!Number.isFinite(Date.parse(x.updatedAt)))throw new Error('日记数据无效');}
+ for(const x of c.markers){checkId(x.id);if(!maps.has(x.mapId)||!text(x.name,100)||!Number.isFinite(x.x)||!Number.isFinite(x.y)||x.x<0||x.x>1||x.y<0||x.y>1)throw new Error('地图标注无效');if(x.characterId!==undefined&&x.characterId!==null&&!chars.has(x.characterId))throw new Error('标注署名无效');validateReplies(x.replies,chars,checkId);}
+ for(const x of c.entries){checkId(x.id);if(sequences.has(x.sequence)||x.sequence<1||!text(x.authorMemberId,120))throw new Error('日记序号或作者无效');sequences.add(x.sequence);highestSequence=Math.max(highestSequence,x.sequence);if(!chars.has(x.characterId)||(x.markerId&&!markers.has(x.markerId))||!text(x.body,100000)||!text(x.adventureLabel,100)||!(x.adventureOrder===null||Number.isSafeInteger(x.adventureOrder))||!Number.isSafeInteger(x.sequence)||!Number.isFinite(Date.parse(x.createdAt))||!Number.isFinite(Date.parse(x.updatedAt)))throw new Error('日记数据无效');validateReplies(x.replies,chars,checkId);}
  for(const x of c.items){checkId(x.id);if((x.ownerId!==null&&!chars.has(x.ownerId))||!text(x.name,200)||!text(x.description,20000)||!Number.isSafeInteger(x.quantity)||x.quantity<1)throw new Error('物品数据无效');}
  if(value.currentCharacterByCampaign[c.id]&&!chars.has(value.currentCharacterByCampaign[c.id]))throw new Error('当前角色不存在');
  for(const x of c.history){if(!text(x.text,1000)||!Number.isFinite(Date.parse(x.at)))throw new Error('流转记录无效');}

@@ -92,3 +92,13 @@ Additional visual research: [Getty, Decorated Text Page, Ms. Ludwig IX 19, fol. 
 Created with built-in ImageGen; the six illuminations retain genuine alpha and are displayed whole. The naturalistic desk is a designed setting, not a photograph of an authenticated medieval object. Generated-asset reuse terms stated above apply. [Exact prompts and output provenance](illumination-v8-prompts.md); [measured image checks](illumination-v8-asset-qa.json).
 
 `quatrefoil-v8.svg` and `penwork-frieze-v8.svg` are code-native responsive ornament under MIT, following the user’s reference emphasis on colored rails, small corner flowers and gold penwork. The supplied manuscript/game screenshots are visual references only and are not published. Existing W.183 parchment retains its separate CC0 source status.
+
+
+## Painted materials and small actions · v9 · 2026-10-02
+
+- `painted-desk-v9.png`: generated edit of the v8 desk, with the room removed and plank grain treated as a painted surface. Replaces the naturalistic v8 setting.
+- `vellum-v9.png`: generated material adaptation of Walters W.183 fol. 126v, with warm ivory color, faint skin structure and scraping marks. Replaces the direct scan as the active ground of leaves, scrolls and dialogs. The CC0 original scan is still packaged unchanged for provenance; the v9 texture is not a historical scan.
+- `wax-seal-v9.png`: generated vermilion wax seal, true alpha, used behind live editing/marking controls. No text is baked into the asset.
+- `ink-flourish-v9.svg` and `compass-action-v9.svg`: native SVG ornament created for the application, MIT; not museum or game extracts.
+
+All three raster outputs are preserved unchanged. Generated-asset reuse terms above apply. [Exact prompts and references](illumination-v9-prompts.md); [dimensions, hashes and transparency](illumination-v9-asset-qa.json). User-uploaded avatars are runtime data and are not part of the public asset collection.
