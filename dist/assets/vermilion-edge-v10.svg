@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="280" viewBox="0 0 16 280"><g transform="translate(16 0) rotate(90)"><defs><linearGradient id="gold" x2="0" y2="1"><stop stop-color="#e1c367"/><stop offset=".38" stop-color="#c9a548"/><stop offset=".73" stop-color="#e1bd59"/><stop offset="1" stop-color="#b98b38"/></linearGradient></defs>
+<path d="M0 1.1C38 .4 63 1.7 95 .9S159 1.5 198 .8 249 1.7 280 1.1L280 14.9C247 15.5 214 14.2 184 15.1S122 14.5 87 15.2 31 14.2 0 14.9Z" fill="url(#gold)" stroke="#30291f" stroke-width=".85"/>
+<path d="M0 4.15C36 3.6 65 4.7 96 4S158 4.7 192 4.05 247 4.7 280 4.15L280 11.9C249 11.2 217 12.6 182 11.9S122 12.45 91 11.8 30 12.4 0 11.9Z" fill="#a5322c" stroke="#2c2922" stroke-width=".7"/>
+<g fill="none" stroke="#f3dda0" stroke-width=".55" opacity=".86"><path d="M7 2.7 27 2.4m31 .2 15 .1m36-.3 31 .3m26-.1 19-.3m34 .1 25 .3m15-.1 13-.1M12 13.4l17 .3m38-.3 22 .1m42 .1 19-.2m43 .1 28-.1m37 .2 14-.1"/></g>
+<g fill="none" stroke="#eedaaa" stroke-width=".6" opacity=".85"><path d="M0 8c7-4.5 15-4.1 23 0s16 4.4 24 0 16-4.1 23 0 16 4.2 23 0 16-4.3 24 0 16 4.2 23 0 16-4.3 24 0 16 4.1 23 0 16-4.3 23 0 16 4.2 23 0 16-4.1 23 0 16 4.5 24 0"/></g>
+<g fill="#e7c768" stroke="#2f2a22" stroke-width=".35"><path d="m23 5 2 3-2 3-1.8-3zm47 .15L72 8l-2 3-1.7-3zm47-.1L119 8l-2 3-1.8-3zm47 .1L166 8l-2 3-1.8-3zm46-.15 2 3-2 3-1.8-3zm46 0 2 3-2 3-1.8-3z"/></g>
+<g stroke="#66552b" opacity=".45" stroke-width=".5"><path d="m46 1.2.7 2m80-2 .6 2m99-2 .7 2M53 12.5l.5 1.8m87-1.8.6 1.9m95-1.8.7 1.9"/></g></g></svg>

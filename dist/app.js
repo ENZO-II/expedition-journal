@@ -133,11 +133,12 @@ function pageHead(title,number,actions=''){
  return '<div class="leaf-heading"><div><span class="leaf-number" aria-hidden="true">'+number+'</span><h2 aria-label="'+h(title)+'"><span class="illuminated-initial">'+h(title[0])+'</span>'+h(title.slice(1))+'</h2></div><div class="leaf-actions">'+actions+'</div></div>';
 }
 function book(left,right,kind){
- return '<div class="book-spread '+kind+'"><section class="book-page page-left">'+left+'</section><section class="book-page page-right">'+right+'</section><span class="book-binding" aria-hidden="true"></span></div>';
+ const frame='<span class="page-painted-frame" aria-hidden="true"><i class="rail-left"></i><i class="rail-right"></i><i class="rail-top"></i><i class="rail-bottom"></i></span>';
+ return '<div class="book-spread '+kind+'"><section class="book-page page-left">'+frame+left+'</section><section class="book-page page-right">'+(kind==='atlas-book'?'':frame)+right+'</section><span class="book-binding" aria-hidden="true"></span></div>';
 }
 function readingPage(){
- return '<div class="reading-frontispiece">'+pageHead('手记','I','<button class="button primary" id="new-entry">＋ 写一篇</button>')+filters()+
- '<div class="reading-toolbar"><span>'+h(view==='map'?(campaign().markers.find(m=>m.id===selectedMarker)?.name??'旅途随记'):entriesForView().length+' 篇手记')+'</span>'+(view==='map'?'<button class="text-button" id="expand-journal">全部手记</button>':'')+'</div><img class="rubric-junction" src="assets/rubric-junction-v7.png" alt="" aria-hidden="true"></div>'+folio();
+ return '<div class="reading-frontispiece"><div class="rubric-panel">'+pageHead('手记','I','<button class="button primary" id="new-entry">＋ 写一篇</button>')+filters()+
+ '</div><div class="reading-toolbar"><span>'+h(view==='map'?(campaign().markers.find(m=>m.id===selectedMarker)?.name??'旅途随记'):entriesForView().length+' 篇手记')+'</span>'+(view==='map'?'<button class="text-button" id="expand-journal">全部手记</button>':'')+'</div><img class="rubric-junction" src="assets/rubric-junction-v7.png" alt="" aria-hidden="true"></div>'+folio();
 }
 function renderMap(){
  const c=campaign(),map=c.maps.find(m=>m.id===selectedMap)??c.maps[0];selectedMap=map?.id??null;

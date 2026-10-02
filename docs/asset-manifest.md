@@ -102,3 +102,15 @@ Created with built-in ImageGen; the six illuminations retain genuine alpha and a
 - `ink-flourish-v9.svg` and `compass-action-v9.svg`: native SVG ornament created for the application, MIT; not museum or game extracts.
 
 All three raster outputs are preserved unchanged. Generated-asset reuse terms above apply. [Exact prompts and references](illumination-v9-prompts.md); [dimensions, hashes and transparency](illumination-v9-asset-qa.json). User-uploaded avatars are runtime data and are not part of the public asset collection.
+
+
+## Ink-outlined painted rails · v10 · 2026-10-02
+
+Five code-native SVG ornaments, created for this project under MIT:
+
+- `lapis-edge-v10.svg`: a continuous blue horizontal band, bordered on both sides by gold and dark ink; slightly wavering paths, small penwork and varied gold highlights.
+- `vermilion-edge-v10.svg`: the corresponding red vertical band.
+- `gilt-rule-h-v10.svg` and `gilt-rule-v-v10.svg`: thin gold strips enclosed by dark ink for independently framing the title panels.
+- `rail-junction-v10.svg`: a small square gold/blue floral corner joining the page rails.
+
+These are responsive interface drawings inspired by the user-provided manuscript references, not crops of those images or historical artifacts. Tiles repeat at their intrinsic aspect ratio; they are not stretched across an entire page. No new raster generation or third-party download was used. The existing page illuminations remain whole.
