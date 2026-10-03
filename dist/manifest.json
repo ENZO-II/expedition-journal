@@ -1,0 +1,16 @@
+{
+  "name": "远征手记 · Expedition Journal",
+  "version": "0.3.0",
+  "manifest_version": 1,
+  "description": "在房间中打开共享远征的地图、角色日记、行囊与公库。",
+  "author": "ENZO-II",
+  "homepage_url": "https://github.com/ENZO-II/expedition-journal",
+  "icon": "/assets/owlbear-book-v13.svg",
+  "action": {
+    "title": "远征手记",
+    "icon": "/assets/owlbear-book-v13.svg",
+    "popover": "/owlbear.html",
+    "width": 440,
+    "height": 630
+  }
+}

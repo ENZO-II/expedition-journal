@@ -129,3 +129,9 @@ The masthead ornaments are unchanged. The map leaf remains unframed.
 ## v12 新增
 
 `dist/assets/dip-pen.svg`：项目原创的代码绘制 SVG，木笔杆、金属笔尖与蘸水墨瓶，用作地图绘图入口和光标；采用项目 MIT 许可。无新增第三方图片，用户上传内容不属于源码素材，也不进入仓库。
+
+## v13 · 手绘线与扩展小页
+
+八份项目原创 SVG，采用 MIT；没有新增游戏图片或馆藏裁切：`lapis-edge-v13.svg`、`vermilion-edge-v13.svg`、`gilt-rule-h-v13.svg`、`gilt-rule-v-v13.svg` 延续已有彩带，改成平涂金色、勾墨短笔与轻微颜料粒纹；`ink-rule-v13.svg` 为金墨分隔线，`painted-panel-v13.svg` 为微有起伏的包金题栏，`pigment-grain-v13.svg` 为低对比颜料纹，`owlbear-book-v13.svg` 为枭熊安装清单与弹出页的彩饰书本图标。现有完整人物、藤枝、纸纹与书桌素材不改动。
+
+`dist/vendor/obr-sdk.js` 为官方 `@owlbear-rodeo/sdk` 3.1.0 的打包版本，含其运行依赖。版本固定在 package-lock.json；SDK 及依赖许可全文在 `dist/vendor/NOTICE.txt`。打包工具 esbuild 为开发依赖，采用 MIT，不是运行时素材。运行时玩家图片与实际房间数据不属于公开素材。

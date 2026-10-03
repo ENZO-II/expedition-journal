@@ -1,16 +1,21 @@
 {
   "name": "expedition-journal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Illuminated campaign journal with shared rooms",
+  "description": "Illuminated campaign journal with private and shared books and an Owlbear extension",
   "scripts": {
     "test": "node --test",
     "check": "node scripts/check.js",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "build:owlbear": "node scripts/build-owlbear.js"
   },
   "license": "MIT",
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@owlbear-rodeo/sdk": "3.1.0",
+    "esbuild": "0.28.2"
   }
 }

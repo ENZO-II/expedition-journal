@@ -4,7 +4,7 @@ export function parseInvite(text){try{const hash=new URL(text,location.href).has
 export class RoomClient{
  constructor(invite,{key,onCampaign,onStatus,onConflict}){Object.assign(this,invite,{key,onCampaign,onStatus,onConflict});this.queue=JSON.parse(localStorage.getItem(key)??'[]');this.controller=new AbortController();this.sending=false;this.paused=false;this.revision=-1;}
  headers(){return{Authorization:'Bearer '+this.token};}
- async request(path,options={}){const response=await fetch('/api/rooms/'+this.id+path,{...options,headers:{...this.headers(),...options.headers},signal:this.controller.signal});if(!response.ok){const data=await response.json();throw Object.assign(new Error(data.error),{status:response.status,data});}return response;}
+ async request(path,options={}){const timeout=options.method==='PUT'?60000:15000;const signal=AbortSignal.any([this.controller.signal,AbortSignal.timeout(timeout)]);const response=await fetch('/api/rooms/'+this.id+path,{...options,headers:{...this.headers(),...options.headers},signal});if(!response.ok){const data=await response.json();throw Object.assign(new Error(data.error),{status:response.status,data});}return response;}
  async start(){const data=await(await this.request('')).json();this.accept(data);this.stream();this.drain();return this.paused?this.ack:this.current();}
  startOffline(campaign){this.ack=structuredClone(this.queue[0]?.base??campaign);this.onCampaign(this.current());this.onStatus('offline');this.stream();this.drain();}
  current(){let c=structuredClone(this.ack);for(const q of this.queue)c=mergeCampaign(q.base,q.desired,c);return c;}

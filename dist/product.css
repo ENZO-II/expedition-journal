@@ -1,0 +1,50 @@
+/* Book ownership lives inside the library, alongside the selected expedition. */
+.masthead{position:relative;z-index:30;overflow:visible}
+.campaign-switch{position:relative;isolation:isolate}
+.campaign-button{display:flex;align-items:center;gap:13px;min-height:44px;max-width:320px;border:0;border-radius:0;background:none;color:#62442c;font:inherit;font-size:18px;padding:5px 13px 8px;position:relative}
+.campaign-button::after{content:"";position:absolute;bottom:2px;left:8px;right:9px;height:4px;background:url('assets/ink-rule-v13.svg') center/100% 100% no-repeat;pointer-events:none;opacity:.7}
+#campaign-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.campaign-button[aria-expanded=true]{color:#8b3328}
+.campaign-menu{position:absolute;top:calc(100% + 9px);left:0;width:340px;max-width:calc(100vw - 32px);padding:13px 18px 15px;background:#eee0bc url('assets/vellum-v9.png') center/cover;border:9px solid transparent;border-image:url('assets/painted-panel-v13.svg') 12 stretch;box-shadow:2px 6px 9px #30201555;color:#503c29;text-align:left;z-index:80}
+.campaign-menu[hidden]{display:none}
+#campaign-list{max-height:min(55dvh,420px);overflow:auto;scrollbar-color:#ae8d4d transparent;scrollbar-width:thin}
+.library-book{position:relative;background:url('assets/ink-rule-v13.svg') bottom/100% 3px no-repeat;padding:0 0 12px;margin:0 0 10px}
+.library-book summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;gap:8px;padding:3px 2px;font-size:18px;color:#783b2c;line-height:1.5;overflow-wrap:anywhere}
+.library-book summary::-webkit-details-marker{display:none}
+.library-book summary::before{content:"›";font-size:24px;color:#986838;line-height:1;transform:rotate(0);width:15px;flex-shrink:0}
+.library-book[open] summary::before{transform:rotate(90deg)}
+.library-variants{margin:2px 0 0 11px;padding-left:13px;border-left:1px solid #b9a073}
+.library-variant{display:flex;align-items:center;gap:5px}
+.library-choice{display:flex;align-items:center;gap:11px;min-height:56px;flex:1;min-width:0;background:none;border:0;color:#593e2b;padding:5px 3px;text-align:left;font:inherit}
+.library-choice strong{font-weight:400;font-size:16px;display:block}
+.library-choice small{display:block;font-size:11px;color:#806745;margin-top:4px;line-height:1.6}
+.library-choice[aria-current=true]{color:#903d2f}
+.library-tick{margin-left:auto;color:#274c70;font-size:21px;transform:rotate(-8deg);padding:0 3px}
+.access-mark{width:18px;height:22px;flex-shrink:0;background:#963f32;border:1px solid #d5b462;outline:1px solid #443426;outline-offset:1px;border-radius:2px 1px 3px 1px;transform:rotate(-2deg);box-shadow:inset 1px 0 #e0c17c,inset -2px 0 #6b2f2b}
+.access-mark.shared{background:#2f5279;transform:rotate(1deg);border-radius:1px 3px 1px 2px;box-shadow:inset 1px 0 #dabc70,inset -2px 0 #1e3956}
+.library-invite{font-size:11px;min-height:44px;white-space:nowrap;padding:4px 1px!important;color:#805335}
+.library-share{font-size:12px;min-height:44px;color:#375c76;padding:5px 3px!important;margin-left:27px}
+.library-footer{display:flex;gap:20px;flex-wrap:wrap;padding:2px 2px 0}
+.library-footer button{font-size:13px;min-height:44px;padding:4px 2px;color:#773e2b}
+.room-settings{display:flex;gap:22px;flex-wrap:wrap}
+.welcome-copy{line-height:1.9;margin:6px 0 23px}
+.welcome-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.welcome-actions .text-button{min-height:44px}
+#room-status-action{padding:0 2px;font-size:11px;min-height:28px;color:#8a372a}
+#room-status-action[hidden]{display:none}
+
+/* Pigment and ink receive the uneven edge; body type is never distorted. */
+.page-painted-frame .rail-top,.page-painted-frame .rail-bottom{background-image:url('assets/lapis-edge-v13.svg')}
+.page-painted-frame .rail-left,.page-painted-frame .rail-right{background-image:url('assets/vermilion-edge-v13.svg')}
+.rubric-panel::after,.inventory-book .leaf-heading::after,.journal-book>.page-right>.leaf-heading::after{background-image:url('assets/gilt-rule-h-v13.svg'),url('assets/gilt-rule-h-v13.svg'),url('assets/gilt-rule-v-v13.svg'),url('assets/gilt-rule-v-v13.svg')}
+.rubric-panel{background-image:url('assets/pigment-grain-v13.svg'),url('assets/manuscript-diaper.svg');background-size:143px 93px,75px 50px;background-blend-mode:multiply,normal}
+.rubric-panel .leaf-heading{border-bottom:none}
+.leaf-actions .button,dialog .button{border-radius:2px 1px 3px 1px;outline-offset:2px}
+.dialog-heading::after{background-image:url('assets/lapis-edge-v13.svg');height:7px;background-size:auto 7px;border:0}
+.field input:not([type=range]),.field textarea{background-image:url('assets/pigment-grain-v13.svg');background-size:180px 120px}
+.folio-bottom,.leaf-reader-footer{border-image:url('assets/ink-rule-v13.svg') 2 stretch}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid #315677;outline-offset:4px}
+@media(max-width:1100px){.campaign-button{max-width:240px;font-size:16px}.campaign-menu{left:auto;right:0}}
+@media(max-width:850px){.campaign-button{font-size:14px;max-width:220px;padding-inline:7px}.campaign-menu{width:315px}.library-choice{min-height:61px}}
+@media(max-width:640px){.campaign-switch{width:auto;order:initial;border:0;flex:1;padding:0;justify-content:center}.campaign-button{max-width:230px}.masthead{flex-wrap:wrap;gap:10px}.header-actions{width:100%;justify-content:flex-end}.campaign-menu{left:auto;right:-10px;max-width:calc(100vw - 28px)}.wordmark{flex-shrink:0}.welcome-actions .button{flex-grow:1}}
+@media print{.campaign-menu{display:none!important}}

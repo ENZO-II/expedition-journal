@@ -1,19 +1,23 @@
-import{mergeCampaign}from'./shared-merge.js?v=20261003-12g';
-import{RoomClient,parseInvite}from'./room-client.js?v=20261003-12g';
-import{assetKeys,mediaRefs,strokePath}from'./media-domain.js?v=20261003-12g';
-import{addReply,markerParticipants,validAvatar}from'./discussion.js?v=20261003-12g';
-import{mountAvatarCrop}from'./avatar-crop.js?v=20261003-12g';
-import{placeScroll}from'./scroll-position.js?v=20261003-12g';
-import{mountMap}from'./map-view.js?v=20261003-12g';
-import{VERSION,uid,escapeHtml as h,sortEntries,transferItem,validateData,createCampaign,demoState}from'./domain.js?v=20261003-12g';
-const $=s=>document.querySelector(s),KEY=(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa')?'expedition-journal-qa-'+(new URLSearchParams(location.search).get('qa')||'default')+'-v1':'expedition-journal-v1'),COLORS=['#702d38','#283d59','#416044','#88552f','#655080'];
-let state,storageBlocked=false;
-try{const raw=localStorage.getItem(KEY);state=raw?validateData(JSON.parse(raw)):demoState();}catch(e){state=demoState();storageBlocked=true;}
+import{manifestURL}from'./owlbear-bridge.js?v=20261003-13d';
+import{mountOwlbearBook}from'./embedded-host.js?v=20261003-13d';
+import{arrangeLibrary,relatedShared}from'./campaign-library.js?v=20261003-13d';
+import{mergeCampaign}from'./shared-merge.js?v=20261003-13d';
+import{RoomClient,parseInvite}from'./room-client.js?v=20261003-13d';
+import{assetKeys,mediaRefs,strokePath}from'./media-domain.js?v=20261003-13d';
+import{addReply,markerParticipants,validAvatar}from'./discussion.js?v=20261003-13d';
+import{mountAvatarCrop}from'./avatar-crop.js?v=20261003-13d';
+import{placeScroll}from'./scroll-position.js?v=20261003-13d';
+import{mountMap}from'./map-view.js?v=20261003-13d';
+import{VERSION,uid,escapeHtml as h,sortEntries,transferItem,validateData,createCampaign,demoState}from'./domain.js?v=20261003-13d';
+const $=s=>document.querySelector(s),KEY=(['127.0.0.1','localhost'].includes(location.hostname)&&new URLSearchParams(location.search).has('qa')?'expedition-journal-qa-'+(new URLSearchParams(location.search).get('qa')||'default')+'-v1':'expedition-journal-v1'),COLORS=['#702d38','#283d59','#416044','#88552f','#655080'];
+let state,storageBlocked=false,firstVisit=false,saveIssue='',libraryOpen=false;
+try{const raw=localStorage.getItem(KEY);firstVisit=!raw;state=raw?validateData(JSON.parse(raw)):demoState();}catch(e){state=demoState();storageBlocked=true;}
 let view='map',selectedMap=null,selectedMarker='marker_begin',selectedEntry='entry_begin',sort='adventure',author='',search='',editing=null,placing=false,movingMarker=null,mapCleanup=null,mapFrame=null,openMarker=null,scrollEntryIndex=0,saveTimer,toastTimer,undoSnapshot=null,undoAfter=null;
 let room=null,roomStatus='local',roomLoading=false,apiAvailable=false,mapMode='marker',inkColor='#30291f',inkWidth=3,pendingPicture=null,movingArt=null;
 let pictureCallback=null,pictureCancel=null,editingBase=null;
 let roomBindings={};try{roomBindings=JSON.parse(localStorage.getItem(KEY+'-rooms')??'{}');}catch{}
 if(!roomBindings||typeof roomBindings!=='object'||Array.isArray(roomBindings))roomBindings={};
+arrangeLibrary(state.campaigns,roomBindings);
 const blobs=new Map(),blobUrls=new Map();
 let dialogCleanup=null,dialogVersion=0,scrollDiscussion='entry';
 const dbPromise=new Promise((resolve,reject)=>{const request=indexedDB.open('expedition-journal-assets',1);request.onupgradeneeded=()=>request.result.createObjectStore('maps');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});
@@ -32,14 +36,14 @@ function persist(){
  if(room?.paused){updateRoomStatus();toast('同步已暂停，请先处理差异。');return false;}
  if(storageBlocked){$('#save-status').textContent='未保存 · 请先导出备份';return false;}
  let previous;
- try{previous=localStorage.getItem(KEY);state.revision=(state.revision??0)+1;localStorage.setItem(KEY,JSON.stringify(state));if(room&&room.ack?.id===campaign().id)room.enqueue(campaign());updateRoomStatus();return true;}catch(e){try{if(previous!==undefined){if(previous===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previous);}}catch{}$('#save-status').textContent='保存失败 · 请导出备份';toast('设备存储不可用或已满，请先导出备份。');return false;}
+ try{previous=localStorage.getItem(KEY);state.revision=(state.revision??0)+1;localStorage.setItem(KEY,JSON.stringify(state));if(room&&room.ack?.id===campaign().id)room.enqueue(campaign());saveIssue='';updateRoomStatus();return true;}catch(e){try{if(previous!==undefined){if(previous===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previous);}}catch{}saveIssue='保存失败 · 请导出备份';$('#save-status').textContent=saveIssue;toast('设备存储不可用或已满，请先导出备份。');return false;}
 }
 function mutate(fn,undo=false){const before=structuredClone(state);try{fn();if(!persist()){state=before;return false;}undoSnapshot=undo?before:null;undoAfter=undo?structuredClone(state):null;if(!undo)$('#undo-action')?.remove();return true;}catch(e){state=before;toast(e.message);return false;}}
 function applyDraft(base,change,undo=false){
  if(room?.paused){toast('同步有差异，请先导出副本或采用房间版本。');return false;}
  const desired=structuredClone(base);change(desired);
  try{const merged=room?mergeCampaign(base,desired,campaign()):desired;return mutate(()=>state.campaigns[state.campaigns.findIndex(c=>c.id===merged.id)]=merged,undo);}
- catch(error){if(error.name!=='ConflictError'){toast(error.message);return false;}try{room.holdConflict(base,desired);state.campaigns[state.campaigns.findIndex(c=>c.id===desired.id)]=desired;localStorage.setItem(KEY,JSON.stringify(state));}catch{toast('本机空间不足，修改尚未留存，请立即导出副本。');return false;}toast('同伴已修改同一项。你的修改已留存，请点“邀请同伴”处理差异。');return false;}
+ catch(error){if(error.name!=='ConflictError'){toast(error.message);return false;}try{room.holdConflict(base,desired);state.campaigns[state.campaigns.findIndex(c=>c.id===desired.id)]=desired;localStorage.setItem(KEY,JSON.stringify(state));}catch{toast('本机空间不足，修改尚未留存，请立即导出副本。');return false;}toast('同伴已修改同一项。你的修改已留存，请点页底的“处理差异”。');return false;}
 }
 
 function undoLast(){if(!undoSnapshot)return;if(room&&undoAfter){try{const restored=mergeCampaign(undoAfter.campaigns.find(c=>c.id===campaign().id),undoSnapshot.campaigns.find(c=>c.id===campaign().id),campaign());if(mutate(()=>state.campaigns[state.campaigns.findIndex(c=>c.id===restored.id)]=restored)){editing=null;render();toast('已撤销上一步');}}catch{toast('这一项已有同伴修改，无法直接撤销。');}return;}const previous=state;state=undoSnapshot;undoSnapshot=null;if(!persist()){undoSnapshot=state;state=previous;return;}editing=null;render();toast('已撤销上一步');}
@@ -68,8 +72,12 @@ function saveDraft(){
 }
 function setView(next){if(!flushDraft())return;const previous=view;openMarker=null;editing=null;placing=false;movingMarker=null;mapMode='marker';pendingPicture=null;movingArt=null;view=next;render(previous!==next?(['map','journal','bag','vault'].indexOf(next)>['map','journal','bag','vault'].indexOf(previous)?'forward':'backward'):null);}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-$('#campaign-select').onchange=e=>{if(!flushDraft()){e.target.value=campaign().id;return;}mutate(()=>state.currentCampaignId=e.target.value);selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';editing=null;connectSavedRoom();render();};
-$('#new-campaign').onclick=()=>{if(!flushDraft())return;dialog('创建战役','<form id="campaign-form"><label class="field">战役名称<input name="name" maxlength="100" required placeholder="为这一段旅程命名"></label><p class="dialog-copy">每个战役拥有独立的角色、地图、手记和公库。创建后可以邀请同伴共用。</p><div class="dialog-actions"><button class="button primary">创建战役</button></div></form>');$('#campaign-form').onsubmit=e=>{e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name)return;if(mutate(()=>{const c=createCampaign(name);state.campaigns.push(c);state.currentCampaignId=c.id;})){closeDialog();editing=null;selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';view='map';connectSavedRoom();render();showCharacters();}};};
+$('#campaign-button').onclick=()=>toggleLibrary();
+$('#campaign-button').onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();toggleLibrary(true);$('#campaign-list [aria-current=true]')?.focus();}};
+$('#join-campaign').onclick=showJoinRoom;
+document.addEventListener('click',e=>{if(libraryOpen&&!e.target.closest('#campaign-switch'))toggleLibrary(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&libraryOpen){toggleLibrary(false);$('#campaign-button').focus();}});
+$('#new-campaign').onclick=()=>{if(!flushDraft())return;toggleLibrary(false);dialog('新建远征','<form id="campaign-form"><label class="field">远征名称<input name="name" maxlength="100" required placeholder="为这一段旅程命名"></label><p class="dialog-copy">每段远征拥有独立的角色、地图、手记和公库。创建后可以邀请同伴共享。</p><div class="dialog-actions"><button class="button primary">新建远征</button></div></form>');$('#campaign-form').onsubmit=e=>{e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name)return;if(mutate(()=>{const c=createCampaign(name);state.campaigns.push(c);state.currentCampaignId=c.id;})){closeDialog();editing=null;selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';view='map';connectSavedRoom();render();showCharacters();}};};
 function showCharacters(){
  if(!flushDraft())return;
  const c=campaign(),active=currentCharacter();
@@ -222,7 +230,7 @@ function renderJournal(){
 function inventoryPage(vault){
  const char=currentCharacter(),owner=vault?null:char?.id,items=campaign().items.filter(x=>x.ownerId===owner),total=items.reduce((n,i)=>n+i.quantity,0);
  return pageHead(vault?'公库':'行囊',vault?'IV':'III','<button class="button primary" data-new-item="'+(vault?'vault':'bag')+'" '+(!vault&&!char?'disabled':'')+'>＋ 记入物品</button>')+
- '<div class="inventory-frontispiece '+(vault?'vault':'')+'"><div><h3>'+h(vault?campaign().name:char?.name??'未登记角色')+'</h3><p class="inventory-count">'+items.length+' 项物品 <span>·</span> '+total+' 件</p>'+(!vault?'<button class="text-button" id="bag-character">切换角色</button>':'<span class="inventory-owner">全体角色共用</span>')+'</div><img class="page-junction" src="assets/'+(vault?'vault-junction-v8.png':'satchel-junction-v8.png')+'" alt="" aria-hidden="true"></div>'+
+ '<div class="inventory-frontispiece '+(vault?'vault':'')+'"><div><h3>'+h(vault?campaign().name:char?.name??'未登记角色')+'</h3><p class="inventory-count">'+items.length+' 项物品 <span>·</span> '+total+' 件</p>'+(!vault?'<button class="text-button" id="bag-character">切换角色</button>':'<span class="inventory-owner">全体角色共享</span>')+'</div><img class="page-junction" src="assets/'+(vault?'vault-junction-v8.png':'satchel-junction-v8.png')+'" alt="" aria-hidden="true"></div>'+
  '<div class="ledger-entries">'+(items.length?items.map((item,i)=>'<article class="item-row"><span class="item-index">'+String(i+1).padStart(2,'0')+'</span><div class="item-content"><h3 class="item-name">'+h(item.name)+'</h3><p class="item-description">'+h(item.description)+'</p>'+itemPicturesHTML(item)+'<div class="item-actions"><button class="text-button" data-edit-item="'+h(item.id)+'">编辑</button><button class="text-button" data-picture-item="'+h(item.id)+'">添图</button><button class="text-button transfer-button" data-transfer-item="'+h(item.id)+'">'+(vault?'← 领取':'存入 / 转交 →')+'</button></div></div><span class="quantity">× '+item.quantity+'</span></article>').join(''):empty('尚无物品',vault?'可从行囊存入，也可以直接记入。':char?'在此记录随身携带的物品。':'先登记或选择一个角色。'))+'</div>'+
  (vault&&campaign().history.length?'<details class="history-list"><summary>出入记录</summary><ol>'+campaign().history.slice(0,20).map(x=>'<li>'+h(x.text)+' <small>'+h(timeText(x.at))+'</small></li>').join('')+'</ol></details>':'');
 }
@@ -231,7 +239,7 @@ function render(turn=null){
  const oldPage=turn&&!matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(turn==='backward'?'.page-left':'.page-right')?.cloneNode(true):null;
  if(mapCleanup){mapCleanup();mapCleanup=null;}mapFrame=null;
  const c=campaign(),char=currentCharacter();
- $('#campaign-select').innerHTML=state.campaigns.map(x=>'<option value="'+h(x.id)+'"'+selected(c.id,x.id)+'>'+h(x.name)+(roomBindings[x.id]?' · 共用':' · 独用')+'</option>').join('');
+ renderLibrary();
  $('#character-label').textContent=char?.name??'登记角色';$('#character-button .avatar').outerHTML=avatarHTML(char?.id);
  document.querySelectorAll('[data-view]').forEach(b=>{const active=b.dataset.view===(view==='vault'?'bag':view);b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
  $('#main').innerHTML=view==='map'?renderMap():view==='journal'?renderJournal():renderInventory();
@@ -326,13 +334,14 @@ function transferForm(id){
 }
 $('#settings-button').onclick=()=>{
  if(!flushDraft())return;
- const c=structuredClone(campaign());dialog('这段远征','<form id="settings-form"><label class="field">战役名称<input name="name" maxlength="100" required value="'+h(c.name)+'"></label><label class="field">当前冒险日期<input name="date" maxlength="100" required value="'+h(c.currentDate.label)+'"><small>新日记自动沿用；可以使用你自己的历法。</small></label><label class="field">当前冒险日序<input name="order" type="number" step="1" required value="'+c.currentDate.order+'"><small>按故事先后排序。日历名称随意，日序按旅程递增。</small></label><div class="room-settings"><button type="button" class="text-button" id="room-settings-button">'+(room?'邀请同伴 / 共享远征':'邀请同伴共用这段远征')+'</button></div><div class="dialog-actions"><button type="button" id="settings-export" class="button">导出手记</button><button type="button" id="restore-button" class="button">导入备份</button><button class="button primary">保存设置</button></div></form>');
+ const c=structuredClone(campaign());dialog('这段远征','<form id="settings-form"><label class="field">远征名称<input name="name" maxlength="100" required value="'+h(c.name)+'"></label><label class="field">当前冒险日期<input name="date" maxlength="100" required value="'+h(c.currentDate.label)+'"><small>新日记自动沿用；可以使用你自己的历法。</small></label><label class="field">当前冒险日序<input name="order" type="number" step="1" required value="'+c.currentDate.order+'"><small>按故事先后排序。日历名称随意，日序按旅程递增。</small></label><div class="room-settings"><button type="button" class="text-button" id="room-settings-button">'+(room?'邀请同伴 / 共享远征':'邀请同伴共享这段远征')+'</button><button type="button" class="text-button" id="owlbear-settings-button">Owlbear 扩展</button></div><div class="dialog-actions"><button type="button" id="settings-export" class="button">导出手记</button><button type="button" id="restore-button" class="button">导入备份</button><button class="button primary">保存设置</button></div></form>');
  $('#settings-form').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target),name=f.get('name').trim(),date=f.get('date').trim(),order=Number(f.get('order'));if(!name||!date||!Number.isSafeInteger(order))return;if(applyDraft(c,desired=>{desired.name=name;desired.currentDate={label:date,order};})){closeDialog();render();}};
  $('#room-settings-button').onclick=showRoom;
+ $('#owlbear-settings-button').onclick=showOwlbearSetup;
  $('#settings-export').onclick=()=>$('#export-button').click();
- $('#restore-button').onclick=()=>{if(room){toast('请先切换到独用远征，再恢复本机备份。共享房间不会被备份替换。');return;}$('#backup-upload').click();};
+ $('#restore-button').onclick=()=>{if(room){toast('请先切换到私有远征，再恢复本机备份。共享房间不会被备份替换。');return;}$('#backup-upload').click();};
 };
-$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记。独用时保存在当前设备；共享远征会同步手记、头像、地图绘图和物品图片。邀请链接持有者可以共同编辑，请只交给同伴。Owlbear 接入尚未完成，仍建议定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html" target="_blank" rel="noopener">沃尔特斯 W.183《时祷书》，126v</a><br>约 1460–1470，布鲁日；原抄本末尾的空白犊皮纸页。原扫描保留为研究素材；当前书页与卷轴使用以它为参考生成的暖象牙色犊皮纸纹理，不是馆藏原图。<a href="https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html" target="_blank" rel="noopener">数字图像开放许可：CC0</a>。</li><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝、书记员与翼龙、彩饰首字母、鸟兽目录、旅人行囊与守库小画、绘画式斜板书桌、纸面纹理、火漆及行囊与木箱是为本项目生成的辅助插画，不属于历史馆藏或游戏原素材。</li></ul>');
+$('#about-button').onclick=()=>dialog('装帧与出处','<p class="dialog-copy">远征手记。私有时保存在当前设备；共享远征会同步手记、头像、地图绘图和物品图片。邀请链接持有者可以共同编辑，请只交给同伴。支持通过 Owlbear 扩展打开已绑定的共享远征。请定期导出完整备份。</p><ul class="source-list"><li><a href="https://www.thedigitalwalters.org/Data/WaltersManuscripts/html/W183/description.html" target="_blank" rel="noopener">沃尔特斯 W.183《时祷书》，126v</a><br>约 1460–1470，布鲁日；原抄本末尾的空白犊皮纸页。原扫描保留为研究素材；当前书页与卷轴使用以它为参考生成的暖象牙色犊皮纸纹理，不是馆藏原图。<a href="https://www.thedigitalwalters.org/01_ACCESS_WALTERS_MANUSCRIPTS.html" target="_blank" rel="noopener">数字图像开放许可：CC0</a>。</li><li><a href="https://www.metmuseum.org/art/collection/search/684184" target="_blank" rel="noopener">Simon Bening《时祷书》</a><br>约 1530–1535，Met，2015.706，8v–9r。图像为公共领域，依 Met Open Access 使用。仅作美术研究参考；新版界面不再裁切使用其边饰。</li><li><a href="https://www.loc.gov/item/2010588182/" target="_blank" rel="noopener">地中海及相连海域航海图</a><br>约 1550，美国国会图书馆。公共领域原图，显示时旋转至北向上。</li><li><a href="https://github.com/ENZO-II/expedition-journal" target="_blank" rel="noopener">项目源代码</a> · MIT License<br>第三方素材按各自许可使用。</li><li>建筑龛、地图装饰、手记页、金地花鸟、栏间花枝、书记员与翼龙、彩饰首字母、鸟兽目录、旅人行囊与守库小画、绘画式斜板书桌、纸面纹理、火漆及行囊与木箱是为本项目生成的辅助插画，不属于历史馆藏或游戏原素材。</li></ul>');
 function download(name,content,type){const url=URL.createObjectURL(content instanceof Blob?content:new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 function markdown(){const c=exportSnapshot().campaigns.find(c=>c.id===campaign().id);return'# '+c.name+'\n\n'+sortEntries(c.entries,sort).map(e=>'## '+(e.adventureLabel||'日期未注明')+' · '+characterName(e.characterId)+'\n\n'+(campaign().markers.find(m=>m.id===e.markerId)?.name?'地点：'+campaign().markers.find(m=>m.id===e.markerId).name+'\n\n':'')+e.body+replyMarkdown(e)+'\n\n---\n写入：'+e.createdAt+' · 序号 '+e.sequence+'\n').join('\n')+c.markers.filter(m=>m.replies?.length).map(m=>'\n## 地点留言：'+m.name+replyMarkdown(m)).join('\n')+'\n## 物品清单\n\n'+c.items.map(i=>'- '+i.name+' × '+i.quantity+'（'+(i.ownerId===null?'公库':characterName(i.ownerId))+'）'+(i.description?'：'+i.description:'')).join('\n');}
 async function exportBackup(){
@@ -350,7 +359,7 @@ $('#export-button').onclick=()=>{
  $('#export-json').onclick=()=>{closeDialog();exportBackup();};
 };
 $('#backup-upload').onchange=async e=>{
- const file=e.target.files[0];e.target.value='';if(!file)return;if(room){toast('请先切换到独用远征，再恢复本机备份。');return;}if(file.size>100*1024*1024){toast('备份超过 100 MB，暂不支持导入');return;}
+ const file=e.target.files[0];e.target.value='';if(!file)return;if(room){toast('请先切换到私有远征，再恢复本机备份。');return;}if(file.size>100*1024*1024){toast('备份超过 100 MB，暂不支持导入');return;}
  try{
  const parsed=JSON.parse(await file.text());if(parsed.format!=='expedition-journal-backup'||parsed.version!==1)throw new Error('不是受支持的备份');
  const data=validateData(parsed.data),images=parsed.images??{},needed=new Set(assetKeys(data.campaigns));
@@ -360,7 +369,7 @@ $('#backup-upload').onchange=async e=>{
  $('#confirm-restore').onclick=async()=>{const button=$('#confirm-restore');button.disabled=true;button.textContent='正在恢复…';try{
  // New map IDs prevent overwriting old image blobs if restoring fails partway.
  for(const key of needed){const url=images[key],comma=url.indexOf(','),bytes=Uint8Array.from(atob(url.slice(comma+1)),x=>x.charCodeAt(0)),mime=url.slice(5,url.indexOf(';')),newId=uid('map');await storeBlob(newId,new Blob([bytes],{type:mime}));for(const c of data.campaigns)for(const m of mediaRefs(c))if(m.asset===key)m.asset='blob:'+newId;}
- room?.stop();room=null;roomStatus='local';const old=state;state=data;storageBlocked=false;if(!persist()){state=old;throw new Error('设备空间不足，未替换当前数据');}for(const c of data.campaigns)delete roomBindings[c.id];localStorage.setItem(KEY+'-rooms',JSON.stringify(roomBindings));history.replaceState(null,'',location.pathname+location.search);closeDialog();editing=null;selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';undoSnapshot=null;render();toast('备份已恢复为独用手记');
+ room?.stop();room=null;roomStatus='local';const old=state;state=data;storageBlocked=false;if(!persist()){state=old;throw new Error('设备空间不足，未替换当前数据');}for(const c of data.campaigns)delete roomBindings[c.id];localStorage.setItem(KEY+'-rooms',JSON.stringify(roomBindings));history.replaceState(null,'',location.pathname+location.search);closeDialog();editing=null;selectedMap=null;selectedMarker=null;selectedEntry=null;author='';search='';undoSnapshot=null;render();toast('备份已恢复为私有手记');
  }catch(err){button.disabled=false;button.textContent='恢复这份备份';toast(err.message);}};
  }catch(err){toast('无法导入：'+err.message);}
 };
@@ -373,7 +382,9 @@ window.addEventListener('storage',e=>{
  try{state=validateData(JSON.parse(e.newValue));undoSnapshot=null;render();toast('已同步此设备另一窗口的更新');}catch{}
 });
 if(!storageBlocked){try{if(!localStorage.getItem(KEY))persist();}catch{storageBlocked=true;}}
-render();startupShared();
+render();startupShared().finally(()=>{if(firstVisit&&!parseInvite(location.href)&&!storageBlocked)showWelcome();});
+// The SDK must subscribe before iframe load: a cached reopen can otherwise miss OBR_READY.
+if(new URLSearchParams(location.search).get('embed')==='owlbear')mountOwlbearBook({beforeClose:flushDraft,onError:toast});
 if(storageBlocked){$('#save-status').textContent='原有数据读取失败 · 已暂停覆盖';toast('原有数据无法读取。为保护内容，已暂停自动保存。可从设置导入备份。');}
 
 function exportSnapshot(){
@@ -428,10 +439,10 @@ function saveStroke(stroke){if(!currentCharacter()){showCharacters();return;}if(
 function editArt(id){const base=structuredClone(campaign()),art=campaign().art?.find(a=>a.id===id);if(!art)return;dialog('地图贴图','<div class="picture-byline">'+avatarHTML(art.characterId)+'<span>'+h(characterName(art.characterId))+'</span></div><figure class="picture-view"><img data-media="'+h(art.asset)+'" class="'+art.shape+'" alt="地图贴图"></figure><form id="art-form"><label class="field">大小<input type="range" name="size" min="0.02" max="0.5" step="0.01" value="'+art.size+'"></label><div class="dialog-actions"><button type="button" class="text-button" id="move-art">移动</button><button type="button" class="text-button danger" id="remove-art">移除</button><button class="button primary">保存</button></div></form>');hydratePictures();$('#art-form').onsubmit=e=>{e.preventDefault();const size=Number(new FormData(e.target).get('size'));if(applyDraft(base,c=>c.art.find(a=>a.id===id).size=size)){closeDialog();render();}};$('#move-art').onclick=()=>{movingArt=id;mapMode='move-art';closeDialog();render();};$('#remove-art').onclick=()=>{if(mutate(()=>campaign().art=campaign().art.filter(a=>a.id!==id),true)){closeDialog();render();toast('贴图已移除',true);}};}
 
 function updateRoomStatus(){
- const shared=room&&room.ack?.id===campaign().id;
- $('.edition').textContent=shared?'共享远征 · '+campaign().name:'独用手记 · '+campaign().name;
- $('#save-status').textContent=roomLoading?'正在打开共享远征…':shared?({saved:'已同步',pending:'正在同步…',offline:'连接中断 · 修改已留存，等待重连',conflict:'同步暂停 · 点击共享处理差异'}[roomStatus]??'正在连接…'):'已保存在此设备';
- const button=$('#share-button');if(button)button.textContent=shared?'邀请同伴':'共用';
+ const shared=Boolean(roomBindings[campaign().id])||room&&room.ack?.id===campaign().id;
+ $('.edition').textContent=shared?'共享远征 · '+campaign().name:'私有手记 · '+campaign().name;
+ $('#save-status').textContent=storageBlocked?'未保存 · 请先导出备份':saveIssue|| (roomLoading?'正在打开共享远征…':shared?({saved:'已同步',pending:'正在同步…',offline:'连接中断 · 修改已留存，等待重连',conflict:'同步暂停 · 请处理差异',local:'连接失败 · 请重新打开共享版本'}[roomStatus]??'正在连接…'):'已保存在此设备');
+ const retry=$('#room-status-action');if(retry){retry.hidden=!shared||!['offline','conflict','local'].includes(roomStatus);retry.textContent=roomStatus==='conflict'?'处理差异':'重新连接';}
 }
 function receiveRoom(c){
  const index=state.campaigns.findIndex(x=>x.id===c.id);if(index<0)state.campaigns.push(c);else state.campaigns[index]=c;
@@ -448,20 +459,22 @@ async function connectRoom(invite,register=false){
   if(room!==client)return false;roomBindings[client.ack.id]=invite;localStorage.setItem(KEY+'-rooms',JSON.stringify(roomBindings));roomLoading=false;history.replaceState(null,'','#room='+invite.id+'.'+invite.token);render();if(register&&!currentCharacter())showCharacters();return true;
  }catch(error){if(client&&room!==client)return false;client?.stop();room=null;roomLoading=false;roomStatus='local';updateRoomStatus();toast('未能打开共享远征：'+error.message);return false;}
 }
-function connectSavedRoom(){const invite=roomBindings[campaign().id];if(invite){connectRoom(invite);return;}room?.stop();room=null;roomLoading=false;roomStatus='local';history.replaceState(null,'',location.pathname+location.search);updateRoomStatus();}
+function connectSavedRoom(){const invite=roomBindings[campaign().id];if(invite){return connectRoom(invite);}room?.stop();room=null;roomLoading=false;roomStatus='local';history.replaceState(null,'',location.pathname+location.search);updateRoomStatus();}
 async function startupShared(){
- try{apiAvailable=(await fetch('/api/health')).ok;}catch{apiAvailable=false;}
+ try{const response=await fetch('/api/health',{signal:AbortSignal.timeout(8000)});apiAvailable=response.ok;}catch{apiAvailable=false;}
  const invite=parseInvite(location.href);if(invite){if(apiAvailable)await connectRoom(invite,true);else toast('这个地址尚未启用共享服务');}else if(roomBindings[campaign().id])connectSavedRoom();
 }
 function cloneForRoom(source){
- const c=structuredClone(source),ids=new Map();const scan=v=>{if(!v||typeof v!=='object')return;if(v.id&&!ids.has(v.id))ids.set(v.id,uid(v.id.split('_')[0]));for(const x of Object.values(v))if(typeof x==='object')if(Array.isArray(x))x.forEach(scan);else scan(x);};scan(c);
+ const c=structuredClone(source),ids=new Map();c.bookId=source.bookId??source.id;const scan=v=>{if(!v||typeof v!=='object')return;if(v.id&&!ids.has(v.id))ids.set(v.id,uid(v.id.split('_')[0]));for(const x of Object.values(v))if(typeof x==='object')if(Array.isArray(x))x.forEach(scan);else scan(x);};scan(c);
  const convert=v=>{if(!v||typeof v!=='object')return;for(const[key,x]of Object.entries(v)){if(['id','mapId','characterId','markerId','ownerId','parentId'].includes(key)&&ids.has(x))v[key]=ids.get(x);else if(Array.isArray(x))x.forEach(convert);else if(typeof x==='object')convert(x);}};convert(c);return{campaign:c,characterId:ids.get(currentCharacter()?.id)};
 }
 function showRoom(){
- if(!room?.paused&&!flushDraft())return;
+ if(!room?.paused&&!flushDraft())return;toggleLibrary(false);
  if(room?.paused){dialog('同步差异','<p>有人同时修改了同一项。你的待同步内容仍保存在此设备，可先导出一份副本。</p><div class="dialog-actions"><button class="button" id="conflict-export">导出我的副本</button><button class="button primary" id="conflict-adopt">采用房间版本</button></div><p class="inline-notice">采用后，待同步修改仍留在本机恢复副本中，不会覆盖同伴的记录。</p>');$('#conflict-export').onclick=exportBackup;$('#conflict-adopt').onclick=async()=>{try{clearTimeout(saveTimer);editing=null;await room.adoptRoom();closeDialog();render();}catch(error){toast(error.message);}};return;}
- if(room){const invite=location.origin+location.pathname+location.search+'#room='+room.id+'.'+room.token;dialog('邀请同伴','<p>'+h(campaign().name)+'</p><label class="field">邀请链接<input id="room-link" readonly value="'+h(invite)+'"></label><p class="inline-notice">持有链接的同伴可以共同编辑这段远征。只交给团里的玩家。</p><div class="dialog-actions"><button class="button primary" id="copy-invite">复制邀请链接</button></div>');$('#copy-invite').onclick=async()=>{try{await navigator.clipboard.writeText(invite);toast('邀请链接已复制');}catch{$('#room-link').select();toast('请复制已选中的邀请链接');}};return;}
- dialog('共用远征','<p>将当前这段远征复制成共享房间，手记、头像、地图笔迹和物品图片一并带过去。</p><div class="dialog-actions"><button class="button primary" id="create-room" '+(apiAvailable?'':'disabled')+'>创建共享远征</button></div>'+(!apiAvailable?'<p class="inline-notice">当前地址只有本机预览。用项目的共享服务启动后即可创建房间。</p>':'')+'<form id="join-room-form"><label class="field">已有邀请链接<input name="invite" required placeholder="粘贴同伴给你的完整链接"></label><button class="text-button">加入远征</button></form>');
+ if(room){const invite=location.origin+location.pathname+'#room='+room.id+'.'+room.token;dialog('邀请同伴','<p>'+h(campaign().name)+'</p><label class="field">邀请链接<input id="room-link" readonly value="'+h(invite)+'"></label><p class="inline-notice">持有链接的同伴可以共同编辑这段远征。只交给团里的玩家。</p><div class="dialog-actions"><button class="button primary" id="copy-invite">复制邀请链接</button></div>');$('#copy-invite').onclick=async()=>{try{await navigator.clipboard.writeText(invite);toast('邀请链接已复制');}catch{$('#room-link').select();toast('请复制已选中的邀请链接');}};return;}
+ const existing=relatedShared(state.campaigns,roomBindings,campaign().id);
+ if(!room&&existing){dialog('共享版本','<p>这段远征已有共享版本。私有手记与共享记录分别保存。</p><div class="dialog-actions"><button class="button primary" id="open-existing-room">打开共享版本</button></div>');$('#open-existing-room').onclick=()=>{closeDialog();switchCampaign(existing.id);};return;}
+ dialog('共享远征','<p>将当前这段远征复制成共享房间，手记、头像、地图笔迹和物品图片一并带过去。</p><div class="dialog-actions"><button class="button primary" id="create-room" '+(apiAvailable?'':'disabled')+'>创建共享远征</button></div>'+(!apiAvailable?'<p class="inline-notice">当前地址暂未启用共享服务。私有手记仍可使用。</p>':'')+'<form id="join-room-form"><label class="field">已有邀请链接<input name="invite" required placeholder="粘贴同伴给你的完整链接"></label><button class="text-button">加入远征</button></form>');
  $('#create-room').onclick=async()=>{const button=$('#create-room');button.disabled=true;button.textContent='正在收存…';const original=campaign(),copy=cloneForRoom(original);try{
   const response=await fetch('/api/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({campaign:copy.campaign})}),data=await response.json();if(!response.ok)throw new Error(data.error);
   const client=new RoomClient(data,{key:KEY+'-outbox-'+data.id,onCampaign:()=>{},onStatus:()=>{},onConflict:()=>{}});
@@ -470,4 +483,55 @@ function showRoom(){
  }catch(error){button.disabled=false;button.textContent='创建共享远征';toast(error.message);}};
  $('#join-room-form').onsubmit=e=>{e.preventDefault();const invite=parseInvite(new FormData(e.target).get('invite'));if(!invite){toast('请粘贴完整的远征邀请链接');return;}closeDialog();connectRoom(invite,true);};
 }
-$('#share-button').onclick=showRoom;
+$('#room-status-action').onclick=()=>room?.paused?showRoom():connectSavedRoom();
+
+
+function toggleLibrary(force){
+ libraryOpen=force??!libraryOpen;
+ $('#campaign-menu').hidden=!libraryOpen;
+ $('#campaign-button').setAttribute('aria-expanded',String(libraryOpen));
+}
+function renderLibrary(){
+ const active=campaign(),books=arrangeLibrary(state.campaigns,roomBindings);
+ $('#campaign-name').textContent=active.name;
+ $('#campaign-list').innerHTML=books.map(book=>{
+  const current=book.variants.some(v=>v.campaign.id===active.id),title=current?active.name:book.name;
+  return '<details class="library-book"'+(current?' open':'')+'><summary><span>'+h(title)+'</span></summary><div class="library-variants">'+book.variants.map(v=>
+   '<div class="library-variant"><button type="button" class="library-choice" data-library-campaign="'+h(v.campaign.id)+'" aria-current="'+(v.campaign.id===active.id)+'"><span class="access-mark '+v.access+'" aria-hidden="true"></span><span><strong>'+h(v.label)+'</strong><small>'+(v.access==='shared'?'同伴共同编辑':'仅保存在这台设备')+'</small></span><span class="library-tick" aria-hidden="true">'+(v.campaign.id===active.id?'✓':'')+'</span></button>'+(v.access==='shared'?'<button class="text-button library-invite" data-library-invite="'+h(v.campaign.id)+'">邀请同伴</button>':'')+'</div>'
+  ).join('')+(!book.variants.some(v=>v.access==='shared')?'<button class="text-button library-share" data-library-share="'+h(book.variants[0].campaign.id)+'">建立共享版本</button>':'')+'</div></details>';
+ }).join('');
+ document.querySelectorAll('[data-library-campaign]').forEach(b=>b.onclick=()=>switchCampaign(b.dataset.libraryCampaign));
+ document.querySelectorAll('[data-library-invite]').forEach(b=>b.onclick=async()=>{if(await switchCampaign(b.dataset.libraryInvite))showRoom();});
+ document.querySelectorAll('[data-library-share]').forEach(b=>b.onclick=async()=>{if(await switchCampaign(b.dataset.libraryShare))showRoom();});
+ toggleLibrary(libraryOpen);
+}
+async function switchCampaign(id){
+ if(!state.campaigns.some(c=>c.id===id)||roomLoading)return false;
+ if(id===campaign().id){toggleLibrary(false);return true;}
+ if(!flushDraft())return false;
+ if(!mutate(()=>state.currentCampaignId=id))return false;
+ selectedMap=null;selectedMarker=null;selectedEntry=null;openMarker=null;author='';search='';editing=null;
+ placing=false;movingMarker=null;mapMode='marker';pendingPicture=null;movingArt=null;undoSnapshot=null;
+ toggleLibrary(false);const pending=connectSavedRoom();render();
+ if(pending)await pending;return Boolean(!roomBindings[id]||room?.ack?.id===id);
+}
+function showJoinRoom(){
+ if(!flushDraft())return;toggleLibrary(false);
+ dialog('加入共享远征','<form id="join-library-form"><label class="field">邀请链接<input name="invite" type="url" required placeholder="粘贴同伴给你的完整链接"></label><p class="inline-notice">加入后，这段远征会收进上方名册的“共享”子项。</p><div class="dialog-actions"><button class="button primary">加入远征</button></div></form>');
+ $('#join-library-form').onsubmit=async e=>{e.preventDefault();const input=new FormData(e.target).get('invite').trim(),invite=parseInvite(input);let url;try{url=new URL(input);}catch{}
+  if(!invite||url?.origin!==location.origin){toast('请使用当前网站的完整远征邀请链接。');return;}
+  const button=e.target.querySelector('button');button.disabled=true;button.textContent='正在打开…';
+  if(await connectRoom(invite,false)){closeDialog();if(!currentCharacter())showCharacters();}else{button.disabled=false;button.textContent='加入远征';}
+ };
+}
+function showWelcome(){
+ dialog('开始使用远征手记','<p class="welcome-copy">为你的西征团新建一段远征，或加入同伴已有的共享记录。</p><div class="welcome-actions"><button class="button primary" id="welcome-create">新建远征</button><button class="button" id="welcome-join">加入共享远征</button><button class="text-button" id="welcome-demo">试读演示</button></div>');
+ $('#welcome-create').onclick=()=>{closeDialog();$('#new-campaign').click();};
+ $('#welcome-join').onclick=showJoinRoom;
+ $('#welcome-demo').onclick=()=>{closeDialog();toast('当前是演示远征。新建远征后可以登记自己的角色。');};
+}
+function showOwlbearSetup(){
+ const manifest=manifestURL(location.origin),local=['127.0.0.1','localhost'].includes(location.hostname);
+ dialog('Owlbear 扩展','<p>在枭熊的扩展管理中添加下面的安装链接。进入房间后，主持人可以绑定这段远征的共享版本。</p><label class="field">安装链接<input readonly id="owlbear-install-link" value="'+h(manifest)+'"></label>'+(local?'<p class="inline-notice">当前是本机调试地址。上线后，安装链接会使用正式网站地址，其他玩家才可以一同打开。</p>':'')+'<div class="dialog-actions"><button class="button primary" id="copy-owlbear-install">复制安装链接</button><a class="text-button" href="https://extensions.owlbear.rodeo/guide" target="_blank" rel="noopener noreferrer">查看安装步骤</a></div>');
+ $('#copy-owlbear-install').onclick=async()=>{try{await navigator.clipboard.writeText(manifest);toast('安装链接已复制');}catch{$('#owlbear-install-link').select();toast('请复制已选中的安装链接');}};
+}

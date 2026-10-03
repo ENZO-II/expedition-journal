@@ -25,7 +25,7 @@ export function validateData(value){
  if(!value.currentCharacterByCampaign||typeof value.currentCharacterByCampaign!=='object'||Array.isArray(value.currentCharacterByCampaign)||!value.campaigns.some(c=>c.id===value.currentCampaignId))throw new Error('当前战役或角色选择无效');
  for(const c of value.campaigns){
  sequences.clear();
- checkId(c.id);if(!text(c.name,100)||!Array.isArray(c.characters)||!Array.isArray(c.maps)||!Array.isArray(c.markers)||!Array.isArray(c.entries)||!Array.isArray(c.items)||!Array.isArray(c.history))throw new Error('战役数据不完整');
+ checkId(c.id);if(c.bookId!==undefined&&(!text(c.bookId,120)||!c.bookId.length))throw new Error('远征关联无效');if(!text(c.name,100)||!Array.isArray(c.characters)||!Array.isArray(c.maps)||!Array.isArray(c.markers)||!Array.isArray(c.entries)||!Array.isArray(c.items)||!Array.isArray(c.history))throw new Error('战役数据不完整');
  if(c.characters.length>500||c.entries.length>10000||c.maps.length>200||c.markers.length>20000||c.items.length>20000||c.history.length>1000)throw new Error('备份过大');
  if(!c.currentDate||!text(c.currentDate.label,100)||!Number.isSafeInteger(c.currentDate.order))throw new Error('冒险日期无效');
  const chars=new Set(c.characters.map(x=>x.id)),maps=new Set(c.maps.map(x=>x.id)),markers=new Set(c.markers.map(x=>x.id));
@@ -41,9 +41,9 @@ export function validateData(value){
  if(!Number.isSafeInteger(value.nextSequence)||value.nextSequence<=highestSequence)throw new Error('写入序号无效');
  return value;
 }
-export function createCampaign(name){return{id:uid('campaign'),name,characters:[],maps:[],markers:[],entries:[],items:[],history:[],currentDate:{label:'远征第 1 日',order:1}};}
+export function createCampaign(name){const id=uid('campaign');return{id,bookId:id,name,characters:[],maps:[],markers:[],entries:[],items:[],history:[],currentDate:{label:'远征第 1 日',order:1}};}
 export function demoState(){
- const c=createCampaign('演示远征');c.id='campaign_demo';
+ const c=createCampaign('演示远征');c.id='campaign_demo';c.bookId=c.id;
  c.characters=[{id:'character_traveler',name:'旅人',color:'#702d38'},{id:'character_scribe',name:'书记员',color:'#283d59'}];
  c.maps=[{id:'map_mediterranean',name:'地中海 · 十六世纪航海图',asset:'assets/portolan.jpg',source:'loc'}];
  c.markers=[{id:'marker_begin',mapId:'map_mediterranean',name:'旅途起点（示例）',x:.46,y:.5},{id:'marker_west',mapId:'map_mediterranean',name:'沿途驻足（示例）',x:.31,y:.39},{id:'marker_east',mapId:'map_mediterranean',name:'下一程（示例）',x:.64,y:.49}];
@@ -52,6 +52,6 @@ export function demoState(){
  {id:'entry_begin',characterId:'character_traveler',authorMemberId:'member_demo',markerId:'marker_begin',body:'这是演示手记。\n\n点“写一篇”开始日记；左键点地图可添加地点，点已有标注可展开记录。\n\n冒险日期和写入时间分别保存。回复与补充收在原篇下。',adventureLabel:'远征第 1 日',adventureOrder:1,sequence:1,createdAt:date,updatedAt:date},
  {id:'entry_west',characterId:'character_scribe',authorMemberId:'member_demo',markerId:'marker_west',body:'这是同一个地点的另一篇示例记录。\n\n点击页脚，可以翻阅大家留在这里的文字。也可以用作者筛选，只读某一位旅人的手记。',adventureLabel:'远征第 3 日',adventureOrder:3,sequence:2,createdAt:'2026-09-29T01:00:00.000Z',updatedAt:'2026-09-29T01:00:00.000Z'},
  {id:'entry_late',characterId:'character_traveler',authorMemberId:'member_demo',markerId:'marker_begin',body:'这一篇是后来补写的示例。\n\n选择“冒险时间”，它会排在第三日之前；选择“写入顺序”，它会出现在最近添加的位置。编辑正文不会改变原来的写入顺序。',adventureLabel:'远征第 2 日',adventureOrder:2,sequence:3,createdAt:'2026-09-29T02:00:00.000Z',updatedAt:'2026-09-29T02:00:00.000Z'}];
- c.items=[{id:'item_lantern',ownerId:'character_traveler',name:'提灯',quantity:1,description:'演示物品。可以存入公库，也可以交给另一位角色。'},{id:'item_food',ownerId:'character_traveler',name:'干粮',quantity:6,description:'演示物品。试着将其中两份存入公库。'},{id:'item_rope',ownerId:null,name:'麻绳',quantity:2,description:'演示公用物品。选中自己的角色后即可领取。'}];
+ c.items=[{id:'item_lantern',ownerId:'character_traveler',name:'提灯',quantity:1,description:'演示物品。可以存入公库，也可以交给另一位角色。'},{id:'item_food',ownerId:'character_traveler',name:'干粮',quantity:6,description:'演示物品。试着将其中两份存入公库。'},{id:'item_rope',ownerId:null,name:'麻绳',quantity:2,description:'演示共享物品。选中自己的角色后即可领取。'}];
  return{version:VERSION,memberId:uid('member'),currentCampaignId:c.id,currentCharacterByCampaign:{[c.id]:'character_traveler'},campaigns:[c],nextSequence:4,revision:0};
 }

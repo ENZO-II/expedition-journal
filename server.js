@@ -43,6 +43,7 @@ export async function createJournalServer({dataDir=join(root,'data'),distDir=joi
  function requireAssets(r,c){for(const ref of assetKeys([c]))if(!r.media[ref.slice(5)])throw fail(400,'图片尚未上传，请重新选择图片');}
  const server=createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
+  res.setHeader('Content-Security-Policy',"frame-ancestors 'self' https://www.owlbear.rodeo https://owlbear.rodeo");
   try{
    const url=new URL(req.url,'http://localhost'),path=url.pathname;
    if(path.startsWith('/api/')&&req.headers.origin&&new URL(req.headers.origin).host!==req.headers.host)throw fail(403,'只接受本站请求');
@@ -96,13 +97,15 @@ export async function createJournalServer({dataDir=join(root,'data'),distDir=joi
     throw fail(405,'不支持的操作');
    }
    if(path.startsWith('/api/'))throw fail(404,'接口不存在');
+   const extensionPublic=path==='/manifest.json'||path==='/assets/owlbear-book-v13.svg';
+   if(extensionPublic){res.setHeader('Access-Control-Allow-Origin','*');if(req.method==='OPTIONS'){res.writeHead(204,{'Access-Control-Allow-Methods':'GET, HEAD','Access-Control-Max-Age':'600'});res.end();return;}}
    if(!['GET','HEAD'].includes(req.method))throw fail(405,'不支持的操作');
    let decoded;try{decoded=decodeURIComponent(path);}catch{throw fail(400,'地址无效');}
    const filename=resolve(distDir,'.'+(decoded==='/'?'/index.html':decoded));
    if(!filename.startsWith(resolve(distDir)+ '\\')&&!filename.startsWith(resolve(distDir)+'/'))throw fail(404,'文件不存在');
    const meta=await stat(filename);if(!meta.isFile())throw fail(404,'文件不存在');
-   const types={'.html':'text/html;charset=utf-8','.js':'text/javascript;charset=utf-8','.css':'text/css;charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
-   res.writeHead(200,{'Content-Type':types[extname(filename)]??'application/octet-stream','Cache-Control':extname(filename)==='.html'?'no-cache':'public, max-age=3600'});res.end(req.method==='HEAD'?undefined:await readFile(filename));
+   const types={'.html':'text/html;charset=utf-8','.js':'text/javascript;charset=utf-8','.css':'text/css;charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.json':'application/json;charset=utf-8','.txt':'text/plain;charset=utf-8'};
+   res.writeHead(200,{'Content-Type':types[extname(filename)]??'application/octet-stream','Cache-Control':extname(filename)==='.html'||path==='/manifest.json'?'no-cache':'public, max-age=3600'});res.end(req.method==='HEAD'?undefined:await readFile(filename));
   }catch(e){if(res.headersSent){res.destroy();return;}json(res,e.status??(e.code==='ENOENT'?404:400),{error:e.status||e.code==='ENOENT'?e.message:'内容无效：'+e.message});}
  });
  server.headersTimeout=30000;server.requestTimeout=60000;
